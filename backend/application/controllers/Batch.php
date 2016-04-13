@@ -16,6 +16,10 @@ class Batch extends Backend_controller {
                 $this->pay();
                 break;
 
+            case 'not_pay':
+                $this->not_pay();
+                break;
+
             default:
                 redirect('');
                 break;
@@ -27,7 +31,18 @@ class Batch extends Backend_controller {
         $this->load->model("Kilometer_model");
 
         foreach($routes as $key => $value) {
-            $this->Kilometer_model->pay_kilometer($key);
+            $this->Kilometer_model->pay_kilometer($key, 1);
+        }
+
+        redirect('');
+    }
+
+    private function not_pay() {
+        $routes = $this->input->post('routes');
+        $this->load->model("Kilometer_model");
+
+        foreach($routes as $key => $value) {
+            $this->Kilometer_model->pay_kilometer($key, 0);
         }
 
         redirect('');

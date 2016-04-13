@@ -7,7 +7,9 @@
         </div>
         <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
             <div class="col-xs-12">
-                Met geselecteerde: <button type="submit" name="action" value="pay" class="btn btn-secondary">Betalen</button>
+                Met geselecteerde:
+                <button type="submit" name="action" value="pay" class="btn btn-secondary">Betaald</button>
+                <button type="submit" name="action" value="not_pay" class="btn btn-secondary">Niet betaald</button>
             </div>
         </div>
         <div class="row">
