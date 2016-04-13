@@ -1,17 +1,17 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-xs-12">
-            <h1>Gereden kilometers</h1>
+<form action="<?php echo base_url("batch"); ?>" method="post">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>Gereden kilometers</h1>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            Geselecteerde: 
+        <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+            <div class="col-xs-12">
+                Met geselecteerde: <button type="submit" name="action" value="pay" class="btn btn-secondary">Betalen</button>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <form action="" method="post">
+        <div class="row">
+            <div class="col-xs-12">
                 <table class="table table-striped table-hover">
                     <thead>
                     <tr>
@@ -30,7 +30,7 @@
                     <?php if (isset($kilometers) && !empty($kilometers)): ?>
                         <?php foreach($kilometers as $km): ?>
                             <tr>
-                                <td><input type="checkbox" name="routes[]" /></td>
+                                <td><input type="checkbox" class="route_check" name="routes[<?php echo $km['id_route']; ?>]" /></td>
                                 <td><?php echo $km['id_route']; ?></td>
                                 <td><?php echo $km['omschrijving']; ?></td>
                                 <td><?php echo $km['datum']['start']['day'].'-'.$km['datum']['start']['month'].'-'.$km['datum']['start']['year'].' '.$km['tijd']['start']['hours'].':'.$km['tijd']['start']['minutes']; ?></td>
@@ -47,32 +47,32 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8">Er zijn nog geen kilometers gemaakt. <span class="fa fa-car"></span></td>
+                            <td colspan="9">Er zijn nog geen kilometers gemaakt. <span class="fa fa-car"></span></td>
                         </tr>
                     <?php endif; ?>
                     </tbody>
                     <tfoot>
                     <tr>
-                        <th colspan="4">Totaal aantal kilometers:</th>
+                        <th colspan="5">Totaal aantal kilometers:</th>
                         <td><?php echo number_format($total, 2,',','.'); ?> km</td>
                         <th>Totaal kosten:</th>
                         <td colspan="2">&euro;<?php echo number_format($total*db_setting('prijs_per_kilometer'),2,',','.'); ?></td>
                     </tr>
                     </tfoot>
                 </table>
-            </form>
+            </div>
         </div>
     </div>
-</div>
+</form>
 
 <script>
     window.addEventListener("DOMContentLoaded", function() {
         // Check all the checkboxes in front of the routes
         $('#select_all_routes').on('click', function(){
             if($('#select_all_routes:checked').val() == "on") {
-                $('input[name="routes[]"]').prop("checked", true);
+                $('.route_check').prop("checked", true);
             } else {
-                $('input[name="routes[]"]').prop("checked", false);
+                $('.route_check').prop("checked", false);
             }
         });
     });

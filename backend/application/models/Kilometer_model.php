@@ -49,6 +49,17 @@ class Kilometer_model extends CI_Model {
         $this->db->update('routes', array('omschrijving' => $omschrijving, 'betaald' => $betaald));
     }
 
+    public function pay_kilometer($id) {
+        $id = (int) $id;
+
+        if (empty($id)) {
+            return null;
+        }
+
+        $this->db->where(array('id_route' => $id));
+        $this->db->update('routes', array('betaald' => 1));
+    }
+
     private function prepare_row($row) {
         $datetime = explode(' ', $row['date']);
         $date = explode('-', $datetime[0]);
