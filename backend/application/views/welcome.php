@@ -1,4 +1,5 @@
 <form action="<?php echo base_url("batch"); ?>" method="post">
+    <input type="hidden" name="referer" value="<?php echo current_url(); ?>" />
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-12">
@@ -10,6 +11,7 @@
                 Met geselecteerde:
                 <button type="submit" name="action" value="pay" class="btn btn-secondary">Betaald</button>
                 <button type="submit" name="action" value="not_pay" class="btn btn-secondary">Niet betaald</button>
+                <button type="submit" name="action" value="delete" class="btn btn-danger" id="delete_btn">Verwijderen</button>
             </div>
         </div>
         <div class="row">
@@ -58,10 +60,19 @@
                         <th colspan="5">Totaal aantal kilometers:</th>
                         <td><?php echo number_format($total, 2,',','.'); ?> km</td>
                         <th>Totaal kosten:</th>
-                        <td colspan="2">&euro;<?php echo number_format($total*db_setting('prijs_per_kilometer'),2,',','.'); ?></td>
+                        <td colspan="2">&euro;<?php echo number_format($price,2,',','.'); ?></td>
                     </tr>
                     </tfoot>
                 </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <nav>
+                    <ul class="pagination">
+                        <?php echo $pagination; ?>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -75,6 +86,13 @@
                 $('.route_check').prop("checked", true);
             } else {
                 $('.route_check').prop("checked", false);
+            }
+        });
+
+        $('#delete_btn').on('click', function(e) {
+            if (!confirm("Weet u zeker dat u de routes wilt verwijderen?")) {
+                e.preventDefault();
+                $('.route_check').prop('checked', false);
             }
         });
     });

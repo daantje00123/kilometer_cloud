@@ -149,15 +149,15 @@
         var tmp_route = JSON.stringify(route);
 
         console.re.info("Route wordt opgeslagen");
-        $.post('https://km.thuis.daanvanberkel.nl/api/save_kms.php', {route: tmp_route, total: distance, start_date: startDate}, function(data) {
+        $.post('api/save_kms.php', {route: tmp_route, total: distance, start_date: startDate}, function(data) {
             alert("De route is opgeslagen");
-            window.location.href = "https://km.thuis.daanvanberkel.nl/";
+            window.location.href = "/";
         });
     });
 
     $('#deleteRoute').on('click', function() {
         if (confirm("Weet u zeker dat u de route wilt verwijderen?")) {
-            window.location.href = "https://km.thuis.daanvanberkel.nl/";
+            window.location.href = "/";
         }
     });
 })();

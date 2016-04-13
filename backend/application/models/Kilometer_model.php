@@ -1,8 +1,12 @@
 <?php
 
 class Kilometer_model extends CI_Model {
-    public function get_kilometers() {
-        $result = $this->db->get("routes")->result_array();
+    public function get_kilometers($limit = 0, $offset = 0) {
+        if ($limit != 0) {
+            $result = $this->db->get("routes", $limit, $offset)->result_array();
+        } else {
+            $result = $this->db->get("routes")->result_array();
+        }
 
         $output = array();
 
@@ -11,6 +15,18 @@ class Kilometer_model extends CI_Model {
         }
 
         return $output;
+    }
+
+    public function count_kilometers() {
+        return $this->db->count_all('routes');
+    }
+
+    public function total_kilometers() {
+        return (float)$this->db->query("SELECT sum(kms) AS kms FROM routes WHERE betaald = 0")->row_array()['kms'];
+    }
+
+    public function total_price() {
+        return db_setting('prijs_per_kilometer')*$this->total_kilometers();
     }
 
     public function get_kilometer($id) {
