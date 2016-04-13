@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Kilometer meter</title>
+
+    <link rel="apple-touch-icon" href="assets/img/76x76.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/76x76.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/180x180.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/120x120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/152x152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="assets/img/167x167.png">
+
+    <link rel="stylesheet" href="bower_components/tether/dist/css/tether.min.css" />
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div id="tripmeter">
+    <h1>Kilometer meter</h1>
+
+    <div id="actionButtons">
+        <button id="start" class="btn btn-primary">Start route</button>
+    </div>
+</div>
+<script>
+    window.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('start').addEventListener('click', function() {
+            window.location.href = "start.html";
+        });
+    });
+</script>
+</body>
+</html>

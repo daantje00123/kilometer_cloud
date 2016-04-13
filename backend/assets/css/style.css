@@ -1,0 +1,12 @@
+table > tfoot > tr > th {
+    text-align: right;
+}
+
+.paid {
+    text-decoration: line-through;
+    color: green;
+}
+
+.not-paid {
+    color: red;
+}

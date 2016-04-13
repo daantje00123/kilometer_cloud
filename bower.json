@@ -1,0 +1,26 @@
+{
+  "name": "Kilometer meter",
+  "authors": [
+    "Daan van Berkel <info@daanvanberkel.nl>"
+  ],
+  "description": "App die kilometers bijhoud",
+  "main": "",
+  "keywords": [
+    "Kilometer",
+    "Meter"
+  ],
+  "license": "MIT",
+  "homepage": "http://daanvanberkel.nl/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "v4-dev",
+    "font-awesome": "^4.5.0"
+  }
+}

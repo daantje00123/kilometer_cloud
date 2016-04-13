@@ -1,0 +1,30 @@
+#tripmeter {
+    display: inline-block;
+    background-color: white;
+    padding: 15px;
+    border-bottom-right-radius: 5px;
+}
+
+#tripmeter > :last-child {
+    margin-bottom: 0;
+}
+
+#details {
+    display: none;
+}
+
+#map {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    text-align: center;
+}
+
+#map > span {
+    position: absolute;
+    top: calc(50vh - 24px);
+    left: calc(50vw - 113px);
+}
