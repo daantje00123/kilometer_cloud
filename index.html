@@ -8,30 +8,41 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Kilometer meter</title>
 
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+
     <link rel="apple-touch-icon" href="assets/img/76x76.png">
     <link rel="apple-touch-icon" sizes="76x76" href="assets/img/76x76.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/img/180x180.png">
     <link rel="apple-touch-icon" sizes="120x120" href="assets/img/120x120.png">
     <link rel="apple-touch-icon" sizes="152x152" href="assets/img/152x152.png">
     <link rel="apple-touch-icon" sizes="167x167" href="assets/img/167x167.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="assets/img/1536x2008.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)" href="assets/img/1496x2048.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 1) and (orientation: portrait)" href="assets/img/768x1004.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 1) and (orientation: landscape)" href="assets/img/748x1024.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="assets/img/1242x2148.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: landscape)" href="assets/img/1182x2208.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="assets/img/750x1294.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="assets/img/640x1096.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" href="assets/img/640x920.png">
+    <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" href="assets/img/320x460.png">
 
-    <link rel="stylesheet" href="bower_components/tether/dist/css/tether.min.css" />
-    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="assets/css/style.css" />
+    <!-- ?v=X.X is een workaround om ervoor te zorgen dat ios de pagina refreshed -->
+    <link rel="stylesheet" href="assets/css/style.css?v=0.1" />
 </head>
 <body>
-<div id="tripmeter">
-    <h1>Kilometer meter</h1>
-
-    <div id="actionButtons">
-        <button id="start" class="btn btn-primary">Start route</button>
+<div id="wrapper">
+    <div class="round-button">
+        <div class="round-button-circle">
+            <a href="#" id="start_btn">Start meter</a>
+        </div>
     </div>
 </div>
 <script>
     window.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('start').addEventListener('click', function() {
-            window.location.href = "start.html";
+        document.getElementById("start_btn").addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href="start.html";
         });
     });
 </script>
