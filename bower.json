@@ -20,7 +20,13 @@
     "tests"
   ],
   "dependencies": {
+    "font-awesome": "^4.5.0",
     "bootstrap": "v4-dev",
-    "font-awesome": "^4.5.0"
+    "angular": "^1.5.4",
+    "angular-route": "^1.5.3",
+    "angular-google-maps": "^2.3.2"
+  },
+  "resolutions": {
+    "angular": "^1.5.4"
   }
 }

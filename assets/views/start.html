@@ -1,0 +1,11 @@
+<div class="clearfix titlebar">
+    <p class="pull-left title">Meter</p>
+    <p class="pull-right"><a href="#" ng-click="ctrl.delete()">Annuleren <span class="fa fa-times"></span></a></p>
+</div>
+
+<ui-gmap-google-map center="ctrl.map.center" zoom="ctrl.map.zoom" control="ctrl.map.control"></ui-gmap-google-map>
+
+<div class="clearfix actionbar">
+    <p class="pull-left"><span id="distance">{{ctrl.distance | number:2}}</span> km</p>
+    <p class="pull-right"><a href="#" ng-click="ctrl.save()">Opslaan <span class="fa fa-floppy-o"></span></a></p>
+</div>

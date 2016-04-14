@@ -117,3 +117,8 @@ body {
     left: 0;
     right: 0;
 }
+
+.angular-google-map-container, .angular-google-map {
+    height: 100%;
+    width: 100%;
+}

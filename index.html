@@ -1,6 +1,7 @@
 <!doctype html>
-<html lang="nl">
+<html lang="nl" ng-app="kmApp">
 <head>
+    <base href="/">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta charset="UTF-8">
@@ -27,24 +28,22 @@
     <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 2)" href="assets/img/640x920.png">
     <link rel="apple-touch-startup-image" media="(device-width: 320px) and (device-height: 480px) and (-webkit-device-pixel-ratio: 1)" href="assets/img/320x460.png">
 
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css"/>
     <!-- ?v=X.X is een workaround om ervoor te zorgen dat ios de pagina refreshed -->
-    <link rel="stylesheet" href="assets/css/style.css?v=0.3" />
+    <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-<div id="wrapper">
-    <div class="round-button">
-        <div class="round-button-circle">
-            <a href="#" id="start_btn">Start meter</a>
-        </div>
-    </div>
-</div>
-<script>
-    window.addEventListener('DOMContentLoaded', function() {
-        document.getElementById("start_btn").addEventListener('click', function(e) {
-            e.preventDefault();
-            window.location.href="start.html";
-        });
-    });
-</script>
+<div ng-view style="height: 100%;"></div>
+
+<script src="bower_components/lodash/dist/lodash.min.js"></script>
+<script src="bower_components/angular/angular.min.js"></script>
+<script src="assets/js/angular-locale_nl-nl.min.js"></script>
+<script src="bower_components/angular-route/angular-route.min.js"></script>
+<script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
+<script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
+
+<script src="assets/js/app.js"></script>
+<script src="assets/js/controllers/home.js"></script>
+<script src="assets/js/controllers/start.js"></script>
 </body>
 </html>
