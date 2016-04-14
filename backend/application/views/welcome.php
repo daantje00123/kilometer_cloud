@@ -9,9 +9,9 @@
         <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
             <div class="col-xs-12">
                 Met geselecteerde:
-                <button type="submit" name="action" value="pay" class="btn btn-secondary">Betaald</button>
-                <button type="submit" name="action" value="not_pay" class="btn btn-secondary">Niet betaald</button>
-                <button type="submit" name="action" value="delete" class="btn btn-danger" id="delete_btn">Verwijderen</button>
+                <button type="submit" name="action" value="pay" class="btn btn-secondary action_btn">Betaald</button>
+                <button type="submit" name="action" value="not_pay" class="btn btn-secondary action_btn">Niet betaald</button>
+                <button type="submit" name="action" value="delete" class="btn btn-danger action_btn" id="delete_btn">Verwijderen</button>
             </div>
         </div>
         <div class="row">
@@ -20,7 +20,6 @@
                     <thead>
                     <tr>
                         <th><input type="checkbox" id="select_all_routes" /></th>
-                        <th>#</th>
                         <th>Omschrijving</th>
                         <th>Start datum</th>
                         <th>Stop datum</th>
@@ -35,7 +34,6 @@
                         <?php foreach($kilometers as $km): ?>
                             <tr>
                                 <td><input type="checkbox" class="route_check" name="routes[<?php echo $km['id_route']; ?>]" /></td>
-                                <td><?php echo $km['id_route']; ?></td>
                                 <td><?php echo $km['omschrijving']; ?></td>
                                 <td><?php echo $km['datum']['start']['day'].'-'.$km['datum']['start']['month'].'-'.$km['datum']['start']['year'].' '.$km['tijd']['start']['hours'].':'.$km['tijd']['start']['minutes']; ?></td>
                                 <td><?php echo $km['datum']['eind']['day'].'-'.$km['datum']['eind']['month'].'-'.$km['datum']['eind']['year'].' '.$km['tijd']['eind']['hours'].':'.$km['tijd']['eind']['minutes']; ?></td>
@@ -51,13 +49,13 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="9">Er zijn nog geen kilometers gemaakt. <span class="fa fa-car"></span></td>
+                            <td colspan="8">Er zijn nog geen kilometers gemaakt. <span class="fa fa-car"></span></td>
                         </tr>
                     <?php endif; ?>
                     </tbody>
                     <tfoot>
                     <tr>
-                        <th colspan="5">Totaal aantal kilometers:</th>
+                        <th colspan="4">Totaal aantal kilometers:</th>
                         <td><?php echo number_format($total, 2,',','.'); ?> km</td>
                         <th>Totaal kosten:</th>
                         <td colspan="2">&euro;<?php echo number_format($price,2,',','.'); ?></td>
@@ -89,10 +87,18 @@
             }
         });
 
-        $('#delete_btn').on('click', function(e) {
-            if (!confirm("Weet u zeker dat u de routes wilt verwijderen?")) {
+        $('.action_btn').on('click', function(e) {
+            if ($('.route_check:checked').length == 0) {
                 e.preventDefault();
-                $('.route_check').prop('checked', false);
+                alert("Selecteer ten minste 1 route!");
+                return;
+            }
+
+            if ($(this).attr('id') == 'delete_btn') {
+                if (!confirm("Weet u zeker dat u de routes wilt verwijderen?")) {
+                    e.preventDefault();
+                    $('.route_check').prop('checked', false);
+                }
             }
         });
     });
