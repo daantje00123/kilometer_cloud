@@ -155,9 +155,12 @@
         });
     });
 
-    $('#deleteRoute').on('click', function() {
+    $('#deleteRoute').on('click', function(e) {
+        e.preventDefault();
         if (confirm("Weet u zeker dat u de route wilt verwijderen?")) {
             window.location.href = "/";
         }
     });
+
+    window.applicationCache.swapCache();
 })();
