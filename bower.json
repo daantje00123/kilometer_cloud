@@ -24,7 +24,8 @@
     "bootstrap": "v4-dev",
     "angular": "^1.5.4",
     "angular-route": "^1.5.3",
-    "angular-google-maps": "^2.3.2"
+    "angular-google-maps": "^2.3.2",
+    "angular-material": "^1.0.7"
   },
   "resolutions": {
     "angular": "^1.5.4"

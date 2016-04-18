@@ -1,7 +1,15 @@
 <?php
 
 class Kilometer_model extends CI_Model {
-    public function get_kilometers($limit = 0, $offset = 0) {
+    public function get_kilometers($limit = 0, $offset = 0, $order = 'desc') {
+        $order = strtoupper($order);
+
+        if ($order != 'DESC' && $order != 'ASC') {
+            $order = 'DESC';
+        }
+
+        $this->db->order_by('start_date', $order);
+
         if ($limit != 0) {
             $result = $this->db->get("routes", $limit, $offset)->result_array();
         } else {

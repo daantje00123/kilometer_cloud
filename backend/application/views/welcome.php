@@ -1,17 +1,32 @@
 <form action="<?php echo base_url("batch"); ?>" method="post">
-    <input type="hidden" name="referer" value="<?php echo current_url(); ?>" />
+    <input type="hidden" name="referer" value="<?php echo current_url().'?'.http_build_query($_GET); ?>" />
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-12">
                 <h1>Gereden kilometers</h1>
             </div>
         </div>
-        <div class="row" style="margin-top: 15px; margin-bottom: 15px;">
+        <div class="row">
             <div class="col-xs-12">
-                Met geselecteerde:
-                <button type="submit" name="action" value="pay" class="btn btn-secondary action_btn">Betaald</button>
-                <button type="submit" name="action" value="not_pay" class="btn btn-secondary action_btn">Niet betaald</button>
-                <button type="submit" name="action" value="delete" class="btn btn-danger action_btn" id="delete_btn">Verwijderen</button>
+                <p>
+                    Met geselecteerde:
+                    <button type="submit" name="action" value="pay" class="btn btn-secondary action_btn">Betaald</button>
+                    <button type="submit" name="action" value="not_pay" class="btn btn-secondary action_btn">Niet betaald</button>
+                    <button type="submit" name="action" value="delete" class="btn btn-danger action_btn" id="delete_btn">Verwijderen</button>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <p>
+                    Aantal items:
+                    <select name="per_page" id="select_per_page" data-toggle="tooltip" data-placement="top" title="Het aantal items dat per pagina wordt weergegeven">
+                        <option value="5"<?php echo ($per_page == 5 ? ' selected' : ''); ?>>5</option>
+                        <option value="10"<?php echo ($per_page == 10 ? ' selected' : ''); ?>>10</option>
+                        <option value="15"<?php echo ($per_page == 15 ? ' selected' : ''); ?>>15</option>
+                        <option value="20"<?php echo ($per_page == 20 ? ' selected' : ''); ?>>20</option>
+                    </select>
+                </p>
             </div>
         </div>
         <div class="row">
@@ -19,14 +34,15 @@
                 <table class="table table-striped table-hover">
                     <thead>
                     <tr>
-                        <th><input type="checkbox" id="select_all_routes" /></th>
+                        <th width="2%"><input type="checkbox" id="select_all_routes" /></th>
                         <th>Omschrijving</th>
-                        <th>Start datum</th>
-                        <th>Stop datum</th>
-                        <th>Aantal kilometers</th>
-                        <th>Betaald</th>
-                        <th>Kosten</th>
-                        <th>Acties</th>
+                        <?php $_GET['order'] = ($order == 'desc' ? 'asc' : 'desc'); ?>
+                        <th width="10%">Start datum <a href="<?php echo base_url(uri_string().'?'.http_build_query($_GET)); ?>"><span class="fa fa-sort-<?php echo $order; ?>"></span></a></th>
+                        <th width="10%">Stop datum</th>
+                        <th width="7%">Aantal kilometers</th>
+                        <th width="5%">Betaald</th>
+                        <th width="5%">Kosten</th>
+                        <th width="5%">Acties</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -55,10 +71,13 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <th colspan="4">Totaal aantal kilometers:</th>
+                        <th colspan="2">Totalen:</th>
+                        <td></td>
+                        <td></td>
                         <td><?php echo number_format($total, 2,',','.'); ?> km</td>
-                        <th>Totaal kosten:</th>
-                        <td colspan="2">&euro;<?php echo number_format($price,2,',','.'); ?></td>
+                        <td></td>
+                        <td>&euro;<?php echo number_format($price,2,',','.'); ?></td>
+                        <td></td>
                     </tr>
                     </tfoot>
                 </table>
@@ -78,6 +97,14 @@
 
 <script>
     window.addEventListener("DOMContentLoaded", function() {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('#select_per_page').on('change', function() {
+            var per_page = $(this).val();
+
+            window.location.href = "<?php echo base_url('welcome/page'); ?>?per_page="+per_page+'&order=<?php echo $order; ?>';
+        });
+
         // Check all the checkboxes in front of the routes
         $('#select_all_routes').on('click', function(){
             if($('#select_all_routes:checked').val() == "on") {
@@ -102,4 +129,15 @@
             }
         });
     });
+
+    function updateQueryStringParameter(uri, key, value) {
+        var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+        var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+        if (uri.match(re)) {
+            return uri.replace(re, '$1' + key + "=" + value + '$2');
+        }
+        else {
+            return uri + separator + key + "=" + value;
+        }
+    }
 </script>
