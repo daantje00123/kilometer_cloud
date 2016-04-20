@@ -119,6 +119,25 @@ body {
 }
 
 .angular-google-map-container, .angular-google-map {
-    height: 100%;
+    height: calc(100vh - 108px);
     width: 100%;
+}
+
+.col33 {
+    width: 33%;
+    display: inline-block;
+}
+
+@media screen and (max-width: 768px) {
+    .col33 {
+        width: 30%;
+    }
+}
+
+.col33:nth-child(2) {
+    text-align: center;
+}
+
+.col33:nth-child(3) {
+    text-align: right;
 }

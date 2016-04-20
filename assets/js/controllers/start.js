@@ -14,6 +14,8 @@
             control: {}
         };
 
+        vm.speed = 0;
+
         var path = [];
         vm.distance = 0;
         var startDate = new Date();
@@ -49,15 +51,19 @@
 
                     map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
                     map.setZoom(16);
-                }, null, {enableHighAccuracy: true});
-                
-                navigator.geolocation.watchPosition(function(position) {
-                    vm.distance = vm.distance + calculateDistance(path[path.length-1].lat, path[path.length-1].lng, position.coords.latitude, position.coords.longitude);
+                    var time1 = Date.now()/1000;
 
-                    path.push({lat: position.coords.latitude, lng: position.coords.longitude});
-                    routePath.setPath(path);
+                    navigator.geolocation.watchPosition(function(position) {
+                        var distance = calculateDistance(path[path.length-1].lat, path[path.length-1].lng, position.coords.latitude, position.coords.longitude)
+                        vm.distance = vm.distance + distance;
+                        vm.speed = calculateSpeed(time1, Date.now()/1000, distance);
 
-                    map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+                        path.push({lat: position.coords.latitude, lng: position.coords.longitude});
+                        routePath.setPath(path);
+
+                        map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+                        time1 = Date.now()/1000;
+                    }, null, {enableHighAccuracy: true});
                 }, null, {enableHighAccuracy: true});
             });
         });
@@ -118,5 +124,13 @@
 
     function deg2rad(deg) {
         return deg * (Math.PI / 180)
+    }
+
+    function calculateSpeed(time1, time2, distance) {
+        // Convert seconds to hours
+        time1 = time1/60/60;
+        time2 = time2/60/60;
+
+        return distance / (time2 - time1);
     }
 })();
