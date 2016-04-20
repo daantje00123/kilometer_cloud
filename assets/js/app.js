@@ -67,7 +67,6 @@
                     loggedin: checkLoggedin
                 }
             });
-
         $locationProvider.html5Mode(true);
 
         uiGmapGoogleMapApiProvider.configure({
@@ -97,7 +96,9 @@
     function httpRequestInterceptor(authFactory) {
         return {
             request: function (config) {
-                config.headers['Authorization'] = 'Bearer '+authFactory.jwt;
+                if (authFactory.jwt) {
+                    config.headers = {Authorization: 'Bearer ' + authFactory.jwt};
+                }
                 return config;
             }
         };
