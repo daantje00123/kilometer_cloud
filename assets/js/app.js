@@ -87,6 +87,9 @@
             },
             setUserId: function(id_user) {
                 factory.id_user = id_user;
+            },
+            getUserId: function() {
+                return factory.id_user;
             }
         };
 
@@ -97,7 +100,11 @@
         return {
             request: function (config) {
                 if (authFactory.jwt) {
-                    config.headers = {Authorization: 'Bearer ' + authFactory.jwt};
+                    if (config.headers) {
+                        config.headers['Authorization'] = 'Bearer ' + authFactory.jwt;
+                    } else {
+                        config.headers = {Authorization: 'Bearer ' + authFactory.jwt};
+                    }
                 }
                 return config;
             }
