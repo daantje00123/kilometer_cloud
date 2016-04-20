@@ -44,7 +44,32 @@ class Kilometer_model extends CI_Model {
             return null;
         }
 
-        $row = $this->db->get_where('routes', array("id_route" => $id))->row_array();
+        $row = $this->db->query("
+            SELECT
+                a.id_route,
+                a.id_user,
+                a.omschrijving,
+                a.date,
+                a.start_date,
+                a.route,
+                a.kms,
+                a.betaald,
+                b.username,
+                b.email,
+                b.firstname,
+                b.middlename,
+                b.lastname,
+                b.active,
+                b.role
+            FROM
+                routes AS a
+            INNER JOIN
+                auth_users AS b
+                ON a.id_user = b.id_user
+            WHERE
+                a.id_route = ".$this->db->escape($id).";
+        ")->row_array();
+        //$row = $this->db->get_where('routes', array("id_route" => $id))->row_array();
 
         return $this->prepare_row($row);
     }
@@ -130,6 +155,8 @@ class Kilometer_model extends CI_Model {
         if (!empty($row['route'])) {
             $row['route'] = json_decode($row['route']);
         }
+
+        $row['user'] = new User_obj($row);
 
         return $row;
     }

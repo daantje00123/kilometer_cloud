@@ -10,3 +10,7 @@ table > tfoot > tr > th {
 .not-paid {
     color: red;
 }
+
+#data-row {
+    margin-bottom: 15px;
+}

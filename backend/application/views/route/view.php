@@ -33,7 +33,10 @@
             <b>Kosten:</b> &euro;<?php echo number_format($kilometer['kms'] * db_setting('prijs_per_kilometer'),2,',','.'); ?>
         </div>
         <div class="col-xs-12 col-md-3">
-            <b>Gebruikers #:</b> <?php echo $kilometer['id_user']; ?>
+            <b>Gebruiker:</b> <?php echo $kilometer['user']->get_fullname(); ?>
+        </div>
+        <div class="col-xs-12 col-md-3">
+            <b>E-mailadres:</b> <a href="mailto:<?php echo $kilometer['user']->get_email(); ?>" target="_blank"><?php echo $kilometer['user']->get_email(); ?></a>
         </div>
     </div>
     <?php if (!empty($kilometer['route'])): ?>
@@ -68,7 +71,7 @@
             }
 
             window.addEventListener('DOMContentLoaded', function() {
-                $('#map-row').height($(document).height() - $('#title-row').height() - $('#data-row').height() - $('#main-menu').height() - 30);
+                $('#map-row').height($(document).height() - $('#title-row').height() - $('#data-row').height() - $('#main-menu').height() - 45);
             });
         </script>
         <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&key=AIzaSyC83qOwsQ6dCRP9TlWoklYl2k63LN3zdLI&callback=initMap" async defer></script>
