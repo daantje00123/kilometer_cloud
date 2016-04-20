@@ -2,7 +2,7 @@
     angular.module('kmApp')
         .controller('startController', startController);
 
-    function startController($scope, uiGmapGoogleMapApi, uiGmapIsReady, $location, $http, $httpParamSerializer) {
+    function startController(uiGmapGoogleMapApi, uiGmapIsReady, $location, $http, authFactory) {
         var vm = this;
 
         vm.map = {
@@ -88,13 +88,13 @@
 
             $http({
                 method: "POST",
-                url: '/api/save_kms.php',
-                data: $httpParamSerializer({
-                    total: vm.distance,
+                url: '/api/v1/protected/route',
+                data: {
+                    id_user: authFactory.id_user,
+                    kms: vm.distance,
                     route: JSON.stringify(path),
                     start_date: startDate
-                }),
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }
             }).then(function(response) {
                 alert("De route is opgeslagen!");
                 $location.path('/');

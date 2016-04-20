@@ -32,6 +32,9 @@
         <div class="col-xs-12 col-md-3">
             <b>Kosten:</b> &euro;<?php echo number_format($kilometer['kms'] * db_setting('prijs_per_kilometer'),2,',','.'); ?>
         </div>
+        <div class="col-xs-12 col-md-3">
+            <b>Gebruikers #:</b> <?php echo $kilometer['id_user']; ?>
+        </div>
     </div>
     <?php if (!empty($kilometer['route'])): ?>
         <div class="row" id="map-row">

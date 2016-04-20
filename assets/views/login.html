@@ -1,0 +1,14 @@
+<h1>Inloggen</h1>
+<form ng-submit="vm.doLogin()">
+    <p>
+        <label for="username">Gebruikersnaam</label><br/>
+        <input type="text" name="username" id="username" ng-model="vm.username" placeholder="Gebruikersnaam" />
+    </p>
+
+    <p>
+        <label for="password">Wachtwoord</label><br/>
+        <input type="password" name="password" id="password" ng-model="vm.password" placeholder="Wachtwoord" />
+    </p>
+
+    <button type="submit">Inloggen</button>
+</form>

@@ -1,0 +1,18 @@
+{
+    "name": "daantje00123/kilometer_meter",
+    "description": "Kilometer meter",
+    "require": {
+        "slim/slim": "^3.0",
+        "firebase/php-jwt": "dev-master",
+        "zendframework/zend-config": "^2.6"
+    },
+    "authors": [
+        {
+            "name": "Daan van Berkel",
+            "email": "info@daanvanberkel.nl"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"Backend\\": "src/"}
+    }
+}

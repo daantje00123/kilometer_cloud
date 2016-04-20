@@ -4,4 +4,4 @@ Met dit programma is het mogelijk om de gereden kilometers bij te houden door mi
 
 # Gebruiken
 
-Voordat je deze software kunt gebruiken moet je `bower install` doen en het bestand `backend/application/config/database.example.php` kopieren en hernoemen naar `database.php` en aanvullen met je eigen gegevens.
+Voordat je deze software kunt gebruiken moet je `bower install` doen, `composer install` en het bestand `backend/application/config/database.example.php` kopieren en hernoemen naar `database.php` en aanvullen met je eigen gegevens.
