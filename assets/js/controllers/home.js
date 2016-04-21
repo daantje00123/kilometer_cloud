@@ -7,6 +7,14 @@
 
         vm.start = function() {
             $location.path('/start');
-        }
+        };
+
+        vm.history = function() {
+
+        };
+
+        vm.logout = function() {
+            $location.path('/logout');
+        };
     }
 })();

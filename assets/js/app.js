@@ -1,5 +1,5 @@
 (function() {
-    angular.module('kmApp', ['ngRoute', 'uiGmapgoogle-maps'])
+    angular.module('kmApp', ['ngRoute', 'uiGmapgoogle-maps', 'ngStorage'])
         .config(config)
         .factory("authFactory", authFactory)
         .factory("httpRequestInterceptor", httpRequestInterceptor)
@@ -9,7 +9,7 @@
                 authFactory.setJwt(data.jwt);
             }).error(function() {
                 authFactory.setLoggedin(false);
-                authFactory.setJwt("");
+                authFactory.deleteJwt();
                 $location.path('/login');
             });
 
@@ -19,7 +19,7 @@
                     authFactory.setJwt(data.jwt);
                 }).error(function() {
                     authFactory.setLoggedin(false);
-                    authFactory.setJwt("");
+                    authFactory.deleteJwt();
                     $location.path('/login');
                 });
             }, 30000);
@@ -34,7 +34,7 @@
             deffered.resolve();
         }).error(function() {
             authFactory.setLoggedin(false);
-            authFactory.setJwt("");
+            authFactory.deleteJwt();
             deffered.reject();
             $location.path('/login');
         });
@@ -66,6 +66,11 @@
                 resolve: {
                     loggedin: checkLoggedin
                 }
+            })
+            .when('/logout', {
+                templateUrl: 'assets/views/logout.html',
+                controller: 'logoutController',
+                controllerAs: 'vm'
             });
         $locationProvider.html5Mode(true);
 
@@ -74,22 +79,27 @@
         });
     }
 
-    function authFactory() {
+    function authFactory($sessionStorage) {
         var factory = {
-            jwt: "",
             loggedin: false,
             id_user: 0,
             setLoggedin: function(status) {
                 factory.loggedin = status;
             },
             setJwt: function(jwt) {
-                factory.jwt = jwt;
+                $sessionStorage.jwt = jwt;
+            },
+            getJwt: function() {
+                return $sessionStorage.jwt;
             },
             setUserId: function(id_user) {
                 factory.id_user = id_user;
             },
             getUserId: function() {
                 return factory.id_user;
+            },
+            deleteJwt: function() {
+                $sessionStorage.jwt = undefined;
             }
         };
 
@@ -99,11 +109,11 @@
     function httpRequestInterceptor(authFactory) {
         return {
             request: function (config) {
-                if (authFactory.jwt) {
+                if (authFactory.getJwt()) {
                     if (config.headers) {
-                        config.headers['Authorization'] = 'Bearer ' + authFactory.jwt;
+                        config.headers['Authorization'] = 'Bearer ' + authFactory.getJwt();
                     } else {
-                        config.headers = {Authorization: 'Bearer ' + authFactory.jwt};
+                        config.headers = {Authorization: 'Bearer ' + authFactory.getJwt()};
                     }
                 }
                 return config;
