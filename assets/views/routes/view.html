@@ -1,0 +1,27 @@
+<div class="titlebar">
+    <p class="pull-left"><a href="#" ng-click="vm.back()"><span class="fa fa-chevron-left"></span> Terug</a></p>
+</div>
+<div class="wrapper">
+    <div class="container">
+        <h1>Rit gegevens</h1>
+        <div class="clearfix" id="routeInfo">
+            <p><b>#:</b> {{vm.route.id_route}}</p>
+            <p><b>Omschrijving:</b> {{vm.route.omschrijving}}</p>
+            <p><b>Start datum:</b> {{vm.route.datum.start.day}}-{{vm.route.datum.start.month}}-{{vm.route.datum.start.year}} {{vm.route.tijd.start.hours}}:{{vm.route.tijd.start.minutes}}</p>
+            <p><b>Stop datum:</b> {{vm.route.datum.eind.day}}-{{vm.route.datum.eind.month}}-{{vm.route.datum.eind.year}} {{vm.route.tijd.eind.hours}}:{{vm.route.tijd.eind.minutes}}</p>
+            <p><b>Aantal kilometer:</b> {{vm.route.kms|number:2}} km</p>
+            <p><b>Reistijd:</b> {{vm.route.tijd.reis}} uur</p>
+            <p><b>Gemiddelde snelheid:</b> {{vm.route.gemiddelde|number:2}} km/u</p>
+            <p><b>Betaald:</b>
+                <span ng-if="vm.route.betaald == 0">Nee</span>
+                <span ng-if="vm.route.betaald == 1">Ja</span>
+            </p>
+            <p><b>Kosten:</b> &euro;{{vm.route.kms * 0.15|number:2}}</p>
+            <p><b>Gebruiker:</b> {{vm.route.firstname}}<span ng-show="vm.route.middlename"> {{vm.route.middlename}}</span> {{vm.route.lastname}}</p>
+            <p><b>E-mailadres:</b> <a ng-href="mailto:{{vm.route.email}}">{{vm.route.email}}</a></p>
+        </div>
+        <ui-gmap-google-map center="vm.map.center" zoom="vm.map.zoom" id="routeViewMap"></ui-gmap-google-map>
+    </div>
+</div>
+<div class="actionbar">
+</div>

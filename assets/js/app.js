@@ -1,6 +1,20 @@
 (function() {
-    angular.module('kmApp', ['ngRoute', 'uiGmapgoogle-maps', 'ngStorage'])
+    angular.module('kmApp', ['ngRoute', 'uiGmapgoogle-maps', 'ngStorage', 'angularUtils.directives.dirPagination'])
         .config(config)
+        .filter('dateToISO', dateToISO)
+        .directive('selectOnClick', ['$window', function ($window) {
+            return {
+                restrict: 'A',
+                link: function (scope, element, attrs) {
+                    element.on('click', function () {
+                        if (!$window.getSelection().toString()) {
+                            // Required for mobile Safari
+                            this.setSelectionRange(0, this.value.length)
+                        }
+                    });
+                }
+            };
+        }])
         .factory("authFactory", authFactory)
         .factory("httpRequestInterceptor", httpRequestInterceptor)
         .run(function($q, $http, $location, authFactory, $interval) {
@@ -70,7 +84,34 @@
             .when('/logout', {
                 templateUrl: 'assets/views/logout.html',
                 controller: 'logoutController',
-                controllerAs: 'vm'
+                controllerAs: 'vm',
+                resolve: {
+                    loggedin: checkLoggedin
+                }
+            })
+            .when('/routes', {
+                templateUrl: 'assets/views/routes.html',
+                controller: 'routesController',
+                controllerAs: 'vm',
+                resolve: {
+                    loggedin: checkLoggedin
+                }
+            })
+            .when('/routes/edit/:id', {
+                templateUrl: 'assets/views/routes/edit.html',
+                controller: 'routesEditController',
+                controllerAs: 'vm',
+                resolve: {
+                    loggedin: checkLoggedin
+                }
+            })
+            .when('/routes/view/:id', {
+                templateUrl: 'assets/views/routes/view.html',
+                controller: 'routesViewController',
+                controllerAs: 'vm',
+                resolve: {
+                    loggedin: checkLoggedin
+                }
             });
         $locationProvider.html5Mode(true);
 
@@ -119,5 +160,11 @@
                 return config;
             }
         };
+    }
+
+    function dateToISO() {
+        return function(input) {
+            return input.replace(/(.+) (.+)/, "$1T$2Z");
+        }
     }
 })();

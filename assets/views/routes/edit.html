@@ -1,0 +1,17 @@
+<div class="titlebar">
+    <p class="pull-left"><a href="#" ng-click="vm.back()"><span class="fa fa-chevron-left"></span> Terug</a></p>
+</div>
+<div class="wrapper">
+    <div class="container">
+        <h1>Rit aanpassen</h1>
+
+        <form ng-submit="vm.save()">
+            <div class="form-group clearfix">
+                <label>Omschrijving</label>
+                <input type="text" ng-model="vm.description" placeholder="Omschrijving" select-on-click />
+            </div>
+            <button type="submit" class="big green">Opslaan</button>
+        </form>
+    </div>
+</div>
+<div class="actionbar"></div>

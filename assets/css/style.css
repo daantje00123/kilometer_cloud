@@ -72,6 +72,13 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 400;
 }
 
+.titlebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
 .actionbar {
     position: fixed;
     bottom: 0;
@@ -140,4 +147,128 @@ button.big.green {
 
 button.big.green:last-child {
     margin-bottom: 0;
+}
+
+button.big.green:hover {
+    background-color: #5bb561;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table thead {
+    text-align: left;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.table thead th {
+    padding: 15px 0;
+    background-color: #67cb74;
+}
+
+.table tbody tr td {
+    padding: 15px 0;
+}
+
+.table tbody tr td:first-child, .table thead tr th:first-child {
+    padding-left: 15px;
+}
+
+.table tbody tr td:last-child {
+    padding-right: 15px;
+}
+
+.table tbody tr:nth-child(even) td {
+    background-color: rgba(105, 203, 120, 0.1);
+}
+
+.table tfoot th {
+    text-align: left;
+    font-weight: bold;
+}
+
+.table tfoot th, .table tfoot td {
+    padding: 15px 0;
+    border-top: 1px solid #67cb74;
+}
+
+.container {
+    padding: 0 15px;
+}
+
+.wrapper {
+    position: fixed;
+    top: 55px;
+    left: 0;
+    right: 0;
+    bottom: 55px;
+    overflow: auto;
+}
+
+.pagination {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+}
+
+.pagination li {
+    display:inline-block;
+}
+
+.pagination li > a {
+    margin-left: -1px;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    text-align: center;
+    display: block;
+    text-decoration: none;
+    color: #67cb74;
+}
+
+.pagination li:first-child > a {
+    margin-left: 0;
+}
+
+.pagination li.disabled > a, .pagination li.active > a {
+    color: #ccc;
+    cursor: default;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    float: left;
+    width: 25%;
+}
+
+.form-group input {
+    float: right;
+    width: 70%;
+}
+
+#routeInfo p {
+    float: left;
+    width: 25%;
+    margin: 0;
+}
+
+#routeInfo b {
+    font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+    #routeInfo p {
+        float: none;
+        width: 100%;
+    }
+}
+
+.angular-google-map#routeViewMap {
+    margin-top: 15px;
+    display: block;
 }

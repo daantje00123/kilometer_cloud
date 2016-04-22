@@ -57,4 +57,290 @@ class Route_model {
             ":kms" => $kms
         ));
     }
+
+    public function getRouteById($id_route, $id_user) {
+        $id_route = (int) $id_route;
+        $id_user = (int) $id_user;
+
+        if (empty($id_route) || empty($id_user)) {
+            throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
+        }
+
+        $stmt = $this->db->prepare("
+            SELECT
+                a.id_route,
+                a.id_user,
+                a.omschrijving,
+                a.date,
+                a.start_date,
+                a.route,
+                a.kms,
+                a.betaald,
+                b.username,
+                b.email,
+                b.firstname,
+                b.middlename,
+                b.lastname
+            FROM
+                routes AS a
+            INNER JOIN
+                auth_users AS b ON a.id_user = b.id_user
+            WHERE
+                a.id_route = :id_route
+            AND
+                a.id_user = :id_user
+        ");
+
+        $stmt->execute(array(
+            ":id_route" => $id_route,
+            ":id_user" => $id_user
+        ));
+
+        return $this->prepare_row($stmt->fetch(\PDO::FETCH_ASSOC));
+    }
+
+    public function editRoute($id_route, $id_user, $description) {
+        $id_route = (int) $id_route;
+        $id_user = (int) $id_user;
+        $description = (string) $description;
+
+        if (empty($id_route) || empty($id_user)) {
+            throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
+        }
+
+        if (empty($description)) {
+            $description = "Geen omschrijving";
+        }
+
+        $route = $this->getRouteById($id_route, $id_user);
+        
+        if (empty($route)) {
+            throw new RouteException("Forbidden resource for user", RouteException::USER_NOT_VALID);
+        }
+
+        $stmt = $this->db->prepare("
+            UPDATE
+                routes
+            SET
+                omschrijving = :description
+            WHERE
+                id_route = :id_route
+        ");
+
+        $stmt->execute(array(
+            ":description" => $description,
+            ":id_route" => $id_route
+        ));
+    }
+
+    public function deleteRoute($id_route, $id_user) {
+        $id_route = (int) $id_route;
+        $id_user = (int) $id_user;
+
+        if (empty($id_route) || empty($id_user)) {
+            throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
+        }
+
+        $stmt = $this->db->prepare("
+            DELETE FROM
+                routes
+            WHERE
+                id_route = :id_route
+            AND
+                id_user = :id_user
+        ");
+
+        $stmt->execute(array(
+            ":id_route" => $id_route,
+            ":id_user" => $id_user
+        ));
+    }
+
+    public function getRoutesByUserId($id_user, $page_number) {
+        $id_user = (int) $id_user;
+        $page_number = (int) $page_number;
+
+        if (empty($id_user)) {
+            throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
+        }
+
+        if ($page_number < 1) {
+            $page_number = 1;
+        }
+
+        $offset = ($page_number - 1) * 10;
+
+        $sql = sprintf("
+            SELECT
+                a.id_route,
+                a.id_user,
+                a.omschrijving,
+                a.date,
+                a.start_date,
+                a.route,
+                a.kms,
+                a.betaald,
+                b.username,
+                b.email,
+                b.firstname,
+                b.middlename,
+                b.lastname
+            FROM
+                routes AS a
+            INNER JOIN
+                auth_users AS b ON a.id_user = b.id_user
+            WHERE
+                a.id_user = :id_user
+            ORDER BY start_date DESC
+            LIMIT 10 OFFSET %d", $offset);
+
+        try {
+            $this->db->getPDO()->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+            $stmt = $this->db->prepare($sql);
+
+            $stmt->execute(array(
+                ":id_user" => $id_user
+            ));
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalKmsByUserId($id_user) {
+        $id_user = (int) $id_user;
+
+        if (empty($id_user)) {
+            throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
+        }
+
+        $stmt = $this->db->prepare("
+            SELECT
+                SUM(kms) AS kms
+            FROM
+                routes
+            WHERE
+                id_user = :id_user
+        ");
+
+        $stmt->execute(array(
+            ":id_user" => $id_user
+        ));
+
+        return $stmt->fetch(\PDO::FETCH_OBJ)->kms;
+    }
+
+    public function getTotalPriceByUserId($id_user) {
+        $id_user = (int) $id_user;
+
+        if (empty($id_user)) {
+            throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
+        }
+
+        return $this->getTotalKmsByUserId($id_user) * 0.15;
+    }
+
+    public function getCountByUserId($id_user) {
+        $id_user = (int) $id_user;
+
+        if (empty($id_user)) {
+            throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
+        }
+
+        $stmt = $this->db->prepare("
+            SELECT
+                COUNT(*) AS count
+            FROM
+                routes
+            WHERE
+                id_user = :id_user
+        ");
+
+        $stmt->execute(array(
+            ":id_user" => $id_user
+        ));
+
+        return $stmt->fetch(\PDO::FETCH_OBJ)->count;
+    }
+
+    private function prepare_row($row) {
+        $datetime = explode(' ', $row['date']);
+        $date = explode('-', $datetime[0]);
+        $time = explode(':', $datetime[1]);
+        $row['datum']['eind'] = array(
+            'day' => $date[2],
+            'month' => $date[1],
+            'year' => $date[0]
+        );
+
+        $row['tijd']['eind'] = array(
+            'hours' => $time[0],
+            'minutes' => $time[1],
+            'seconds' => $time[2]
+        );
+
+        $datetime = explode(' ', $row['start_date']);
+        $date = explode('-', $datetime[0]);
+        $time = explode(':', $datetime[1]);
+        $row['datum']['start'] = array(
+            'day' => $date[2],
+            'month' => $date[1],
+            'year' => $date[0]
+        );
+
+        $row['tijd']['start'] = array(
+            'hours' => $time[0],
+            'minutes' => $time[1],
+            'seconds' => $time[2]
+        );
+
+        $reis = (strtotime($row['date']) - strtotime($row['start_date']));
+
+        $row['tijd']['reis'] = $this->sec2hms($reis);
+        $row['gemiddelde'] = $row['kms']/($reis/60/60);
+
+        if (!empty($row['route'])) {
+            $row['route'] = json_decode($row['route']);
+        }
+
+        return $row;
+    }
+
+    private function sec2hms ($sec, $padHours = false)
+    {
+
+        // start with a blank string
+        $hms = "";
+
+        // do the hours first: there are 3600 seconds in an hour, so if we divide
+        // the total number of seconds by 3600 and throw away the remainder, we're
+        // left with the number of hours in those seconds
+        $hours = intval(intval($sec) / 3600);
+
+        // add hours to $hms (with a leading 0 if asked for)
+        $hms .= ($padHours)
+            ? str_pad($hours, 2, "0", STR_PAD_LEFT). ":"
+            : $hours. ":";
+
+        // dividing the total seconds by 60 will give us the number of minutes
+        // in total, but we're interested in *minutes past the hour* and to get
+        // this, we have to divide by 60 again and then use the remainder
+        $minutes = intval(($sec / 60) % 60);
+
+        // add minutes to $hms (with a leading 0 if needed)
+        $hms .= str_pad($minutes, 2, "0", STR_PAD_LEFT). ":";
+
+        // seconds past the minute are found by dividing the total number of seconds
+        // by 60 and using the remainder
+        $seconds = intval($sec % 60);
+
+        // add seconds to $hms (with a leading 0 if needed)
+        $hms .= str_pad($seconds, 2, "0", STR_PAD_LEFT);
+
+        // done!
+        return $hms;
+
+    }
 }

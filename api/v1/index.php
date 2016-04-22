@@ -7,7 +7,15 @@ ini_set('display_errors', 1);
 require_once(__DIR__.'/../../vendor/autoload.php');
 
 $config = new \Zend\Config\Config(require __DIR__.'/config/config.php');
-$app = new \Slim\App();
+
+$configuration = [
+    'settings' => [
+        'displayErrorDetails' => true,
+    ],
+];
+$c = new \Slim\Container($configuration);
+$app = new \Slim\App($c);
+
 $pdo = new PDO('mysql:host='.$config->database->get('host', 'localhost').';dbname='.$config->database->get('database'),
     $config->database->get('username'),
     $config->database->get('password')
@@ -81,6 +89,105 @@ $app->group('/protected', function() use ($jwt_model, $route_model) {
         return $res->withJson(array(
             'success' => true,
             'message' => "Route saved"
+        ));
+    });
+
+    // Get the route history
+    $this->get('/routes', function($req, $res) use ($route_model) {
+        $id_user = $req->getAttribute('jwt')->data->id_user;
+        $page_number = (isset($_GET['page']) ? $_GET['page'] : 1);
+
+        try {
+            $routes = $route_model->getRoutesByUserId($id_user, $page_number);
+            $kms = $route_model->getTotalKmsByUserId($id_user);
+            $price = $route_model->getTotalPriceByUserId($id_user);
+            $count = $route_model->getCountByUserId($id_user);
+        } catch (\Backend\Exceptions\RouteException $e) {
+            return $res->withJson(array(
+                'success' => false,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode()
+            ), 500);
+        }
+
+        return $res->withJson(array(
+            'success' => true,
+            'message' => 'Routes found',
+            'routes' => $routes,
+            'totals' => array(
+                'kms' => $kms,
+                'price' => $price,
+                'count' => $count
+            )
+        ));
+    });
+
+    // Get a single route
+    $this->get('/route', function($req, $res) use ($route_model) {
+        $id_route = (isset($req->getQueryParams()['id_route']) ? $req->getQueryParams()['id_route'] : 0);
+        $id_user = $req->getAttribute('jwt')->data->id_user;
+
+        try {
+            $route = $route_model->getRouteById($id_route, $id_user);
+        } catch (\Backend\Exceptions\RouteException $e) {
+            return $res->withJson(array(
+                'success' => false,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode()
+            ));
+        }
+
+        return $res->withJson(array(
+            'success' => true,
+            'message' => 'Route found',
+            'route' => $route
+        ));
+    });
+
+    // Edit route
+    $this->put('/route', function($req, $res) use ($route_model) {
+        $body = $req->getParsedBody();
+
+        $id_user = $req->getAttribute('jwt')->data->id_user;
+        $id_route = (isset($body['id_route']) ? $body['id_route'] : null);
+        $description = (isset($body['description']) ? $body['description'] : null);
+        
+        try {
+            $route_model->editRoute($id_route, $id_user, $description);
+            $route = $route_model->getRouteById($id_route, $id_user);
+        } catch (\Backend\Exceptions\RouteException $e) {
+            return $res->withJson(array(
+                'success' => false,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode()
+            ), 500);
+        }
+
+        return $res->withJson(array(
+            'success' => true,
+            'message' => 'Route changed',
+            'route' => $route
+        ));
+    });
+
+    // Delete route
+    $this->delete('/route', function($req, $res) use ($route_model) {
+        $id_route = (isset($req->getQueryParams()['id_route']) ? $req->getQueryParams()['id_route'] : 0);
+        $id_user = $req->getAttribute('jwt')->data->id_user;
+
+        try {
+            $route_model->deleteRoute($id_route, $id_user);
+        } catch (\Backend\Exceptions\RouteException $e) {
+            return $res->withJson(array(
+                'success' => false,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode()
+            ), 500);
+        }
+
+        return $res->withJson(array(
+            'success' => true,
+            'message' => 'Route deleted'
         ));
     });
 

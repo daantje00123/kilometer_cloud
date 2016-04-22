@@ -1,0 +1,67 @@
+<div class="titlebar clearfix">
+    <p class="pull-left"><a href="#" ng-click="vm.back()"><span class="fa fa-chevron-left"></span> Terug</a></p>
+</div>
+
+<div class="wrapper">
+    <div class="container clearfix">
+        <h1 class="pull-left">Ritten geschiedenis</h1>
+        <p class="pull-right" ng-show="vm.showAction()">Hier moeten nog de batch acties komen... :)</p>
+    </div>
+    <table ng-if="vm.routes.length > 0" class="table">
+        <thead>
+        <tr>
+            <th><input type="checkbox" ng-model="vm.selectedAll" ng-click="vm.checkAll()" /></th>
+            <th>Omschrijving</th>
+            <th>Start datum</th>
+            <th>Stop datum</th>
+            <th>Aantal kilometers</th>
+            <th>Betaald</th>
+            <th>Kosten</th>
+            <th>Acties</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr dir-paginate="route in vm.routes|itemsPerPage:10" total-items="vm.totalRoutes" current-page="vm.pagination.current">
+            <td><input type="checkbox" ng-model="vm.checked[route.id_route]" /></td>
+            <td>{{route.omschrijving}}</td>
+            <td>{{route.start_date | dateToISO | date:"dd-MM-yyyy HH:mm"}}</td>
+            <td>{{route.date | dateToISO | date:"dd-MM-yyyy HH:mm"}}</td>
+            <td>{{route.kms | number:2}} km</td>
+            <td>
+                <span ng-if="route.betaald == 0">Nee</span>
+                <span ng-if="route.betaald == 1">Ja</span>
+            </td>
+            <td>&euro;{{route.kms*0.15 | number:2}}</td>
+            <td>
+                <a href="#" ng-click="vm.view(route)"><span class="fa fa-eye"></span></a>
+                <a href="#" ng-click="vm.edit(route)"><span class="fa fa-pencil"></span></a>
+                <a href="#" ng-click="vm.delete(route)"><span class="fa fa-trash"></span></a>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td></td>
+            <th>Totalen</th>
+            <td></td>
+            <td></td>
+            <td>{{vm.totals.kms|number:2}} km</td>
+            <td></td>
+            <td>&euro;{{vm.totals.price|number:2}}</td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+    <p ng-if="vm.routes.length < 1">De ritten worden geladen... <span class="fa fa-spin fa-spinner"></span></p>
+
+    <div class="container">
+        <dir-pagination-controls
+                max-size="5"
+                direction-links="true"
+                boundary-links="true"
+                on-page-change="vm.pageChanged(newPageNumber)" >
+        </dir-pagination-controls>
+    </div>
+</div>
+
+<div class="actionbar"></div>

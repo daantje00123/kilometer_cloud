@@ -10,7 +10,7 @@
         };
 
         vm.history = function() {
-
+            $location.path('/routes');
         };
 
         vm.logout = function() {

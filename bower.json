@@ -26,7 +26,8 @@
     "angular-route": "^1.5.3",
     "angular-google-maps": "^2.3.2",
     "angular-material": "^1.0.7",
-    "ngstorage": "ng-storage#^0.4.2"
+    "ngstorage": "ng-storage#^0.4.2",
+    "angularUtils-pagination": "angular-utils-pagination#^0.11.1"
   },
   "resolutions": {
     "angular": "^1.5.4"
