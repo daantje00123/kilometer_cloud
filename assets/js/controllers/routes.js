@@ -39,7 +39,7 @@
         };
 
         vm.showAction = function() {
-            var trues = $filter("filter")( vm.checked , true );
+            var trues = $filter("filter")(vm.checked , true);
             return trues.length;
         };
 
@@ -65,6 +65,36 @@
             }
         };
 
+        vm.batchPay = function(status) {
+            var items = getCheckedItems();
+            
+            $http.put('/api/v1/protected/batch/routes/paid-status', {
+                routes: items,
+                status: status
+            })
+                .success(function(data) {
+                    getResultsPage(vm.pagination.current);
+                    vm.checked = [];
+                })
+                .error(function(data) {
+                    console.log(data);
+                    alert("Er is een fout opgetreden tijdens het aanpassen van de betaald status.");
+                });
+        };
+
+        vm.batchDelete = function() {
+            var items = getCheckedItems();
+
+            $http.delete('/api/v1/protected/batch/routes/delete?routes='+JSON.stringify(items))
+                .success(function(data) {
+                    getResultsPage(vm.pagination.current);
+                })
+                .error(function(data) {
+                    console.log(data);
+                    alert("Er is een fout opgetreden tijdens het verwijderen van de ritten.");
+                });
+        };
+
         function getResultsPage(pageNumber) {
             $http.get('/api/v1/protected/routes?page='+pageNumber)
                 .success(function(data) {
@@ -76,6 +106,18 @@
                     console.log(data);
                     alert("Er is een fout opgetreden tijdens het ophalen van de ritten, probeer het later nog een keer.");
                 });
+        }
+
+        function getCheckedItems() {
+            var output = [];
+
+            angular.forEach(vm.checked, function(item, index) {
+                if (item === true) {
+                    output.push(index);
+                }
+            });
+
+            return output;
         }
     }
 })();

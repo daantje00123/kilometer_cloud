@@ -12,17 +12,7 @@ use Zend\Config\Config;
  * @package         Backend
  * @subpackage      Controllers
  */
-class JwtController {
-    /**
-     * @var     \Interop\Container\ContainerInterface
-     */
-    private $ci;
-
-    /**
-     * @var     \Zend\Config\Config
-     */
-    private $config;
-
+class JwtController extends Controller {
     /**
      * @var     \Backend\Models\JwtModel
      */
@@ -39,8 +29,8 @@ class JwtController {
      * @param   \Interop\Container\ContainerInterface           $ci
      */
     public function __construct(ContainerInterface $ci) {
-        $this->ci = $ci;
-        $this->config = new Config(require(__DIR__.'/../../api/v1/config/config.php'));
+        parent::__construct($ci);
+
         $this->userModel = new UserModel($this->config);
         $this->jwtModel = new JwtModel($this->config, $this->userModel);
     }

@@ -44,6 +44,12 @@ $app->group('/protected', function() {
 
     // Generate a new JWT with a valid JWT
     $this->get('/ping', '\Backend\Controllers\JwtController:ping');
+
+    // Batch change paid status
+    $this->put('/batch/routes/paid-status', '\Backend\Controllers\BatchController:changePaidStatus');
+
+    // Batch delete routes
+    $this->delete('/batch/routes/delete', '\Backend\Controllers\BatchController:deleteRoutes');
 })->add(new \Backend\Middleware\JwtMiddleware());
 
 $app->run();

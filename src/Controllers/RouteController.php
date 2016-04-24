@@ -11,29 +11,19 @@ use Exception;
  * @package Backend
  * @subpackage Controllers
  */
-class RouteController {
+class RouteController extends Controller {
     /**
      * @var \Backend\Models\RouteModel
      */
     private $model;
 
     /**
-     * @var \Zend\Config\Config
-     */
-    private $config;
-
-    /**
-     * @var \Interop\Container\ContainerInterface
-     */
-    private $ci;
-
-    /**
      * RouteController constructor.
      * @param   \Interop\Container\ContainerInterface      $ci
      */
     public function __construct(ContainerInterface $ci) {
-        $this->ci = $ci;
-        $this->config = new Config(require(__DIR__.'/../../api/v1/config/config.php'));
+        parent::__construct($ci);
+
         $this->model = new RouteModel($this->config);
     }
 
