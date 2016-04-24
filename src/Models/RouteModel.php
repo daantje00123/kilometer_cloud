@@ -5,7 +5,7 @@ use Backend\Database;
 use Backend\Exceptions\RouteException;
 use Zend\Config\Config;
 
-class Route_model {
+class RouteModel {
     private $db;
     private $config;
 

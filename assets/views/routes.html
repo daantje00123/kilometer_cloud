@@ -5,7 +5,6 @@
 <div class="wrapper">
     <div class="container clearfix">
         <h1 class="pull-left">Ritten geschiedenis</h1>
-        <p class="pull-right" ng-show="vm.showAction()">Hier moeten nog de batch acties komen... :)</p>
     </div>
     <table ng-if="vm.routes.length > 0" class="table">
         <thead>
@@ -64,4 +63,6 @@
     </div>
 </div>
 
-<div class="actionbar"></div>
+<div class="actionbar clearfix">
+    <p ng-show="vm.showAction()">Met geselecteerde: <button>Markeren als betaald</button> <button>Markeren als niet betaald</button> <button>Verwijderen</button></p>
+</div>

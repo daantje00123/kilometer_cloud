@@ -6,11 +6,13 @@ use Backend\Exceptions\UserException;
 use Firebase\JWT\JWT;
 use Zend\Config\Config;
 
-class Jwt_model {
+class JwtModel {
     private $config;
+    private $userModel;
 
-    public function __construct(Config $config) {
+    public function __construct(Config $config, UserModel $userModel) {
         $this->config = $config;
+        $this->userModel = $userModel;
     }
 
     public function getJwt(array $data) {
@@ -44,10 +46,8 @@ class Jwt_model {
             throw new JwtException("Old JWT cannot be empty", JwtException::EMPTY_JWT);
         }
 
-        $user_model = new User_model($this->config);
-
         try {
-            $user = $user_model->getUserByUsername($old_jwt->data->username);
+            $user = $this->userModel->getUserByUsername($old_jwt->data->username);
         } catch (UserException $e) {
             throw $e;
         }

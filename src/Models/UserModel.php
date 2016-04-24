@@ -5,7 +5,7 @@ use Backend\Database;
 use Backend\Exceptions\UserException;
 use Zend\Config\Config;
 
-class User_model {
+class UserModel {
     private $db;
     private $userFields = array(
         "id_user",
