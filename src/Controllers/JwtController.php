@@ -6,12 +6,38 @@ use Backend\Models\UserModel;
 use Interop\Container\ContainerInterface;
 use Zend\Config\Config;
 
+/**
+ * Class JwtController
+ *
+ * @package         Backend
+ * @subpackage      Controllers
+ */
 class JwtController {
+    /**
+     * @var     \Interop\Container\ContainerInterface
+     */
     private $ci;
+
+    /**
+     * @var     \Zend\Config\Config
+     */
     private $config;
+
+    /**
+     * @var     \Backend\Models\JwtModel
+     */
     private $jwtModel;
+
+    /**
+     * @var     \Backend\Models\UserModel
+     */
     private $userModel;
 
+    /**
+     * JwtController constructor.
+     *
+     * @param   \Interop\Container\ContainerInterface           $ci
+     */
     public function __construct(ContainerInterface $ci) {
         $this->ci = $ci;
         $this->config = new Config(require(__DIR__.'/../../api/v1/config/config.php'));
@@ -19,6 +45,18 @@ class JwtController {
         $this->jwtModel = new JwtModel($this->config, $this->userModel);
     }
 
+    /**
+     * Login an user.
+     *
+     * Required POST data:
+     *  username
+     *  password
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
     public function login($req, $res) {
         $body = $req->getParsedBody();
 
@@ -58,6 +96,19 @@ class JwtController {
         ));
     }
 
+    /**
+     * Ping function sends a new JWT as response.
+     *
+     * Requires a valid JWT
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     *
+     * @throws      \Backend\Exceptions\JwtException
+     * @throws      \Backend\Exceptions\UserException
+     */
     public function ping($req, $res) {
         try {
             $new_jwt = $this->jwtModel->regenerateJwt($req->getAttribute('jwt'));

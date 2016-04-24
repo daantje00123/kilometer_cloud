@@ -5,8 +5,20 @@ use Backend\Database;
 use Backend\Exceptions\UserException;
 use Zend\Config\Config;
 
+/**
+ * Class UserModel
+ * @package Backend
+ * @subpackage Models
+ */
 class UserModel {
+    /**
+     * @var \Backend\Database
+     */
     private $db;
+
+    /**
+     * @var array         Database columns
+     */
     private $userFields = array(
         "id_user",
         "username",
@@ -21,6 +33,10 @@ class UserModel {
         "role"
     );
 
+    /**
+     * UserModel constructor.
+     * @param \Zend\Config\Config       $config
+     */
     public function __construct(Config $config) {
         $this->db = new Database(
             $config->database->host,
@@ -29,7 +45,14 @@ class UserModel {
             $config->database->database
         );
     }
-    
+
+    /**
+     * Get user data
+     *
+     * @param   string      $username       Username
+     * @return  array
+     * @throws  \Backend\Exceptions\UserException
+     */
     public function getUserByUsername($username) {
         if (empty($username)) {
             throw new UserException("Username cannot be empty", UserException::USERNAME_EMPTY);
@@ -57,6 +80,13 @@ class UserModel {
         return $stmt->fetch(\PDO::FETCH_OBJ);
     }
 
+    /**
+     * Get user data
+     *
+     * @param   int         $id         User id
+     * @return  array
+     * @throws  \Backend\Exceptions\UserException
+     */
     public function getUserById($id) {
         $id = (int) $id;
 
@@ -86,6 +116,14 @@ class UserModel {
         return $stmt->fetch(\PDO::FETCH_OBJ);
     }
 
+    /**
+     * Check if supplied credentials are valid
+     *
+     * @param   string      $username       Username
+     * @param   string      $password       Password
+     * @return  array
+     * @throws  \Backend\Exceptions\UserException
+     */
     public function validateLogin($username, $password) {
         if (empty($username)) {
             throw new UserException("Username cannot be empty", UserException::USERNAME_EMPTY);

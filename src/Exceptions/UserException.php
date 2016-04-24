@@ -1,6 +1,11 @@
 <?php
 namespace Backend\Exceptions;
 
+/**
+ * Class UserException
+ * @package Backend
+ * @subpackage Exceptions
+ */
 class UserException extends \Exception {
     const NOT_FOUND = 101;
     const USERNAME_EMPTY = 102;

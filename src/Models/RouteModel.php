@@ -4,11 +4,28 @@ namespace Backend\Models;
 use Backend\Database;
 use Backend\Exceptions\RouteException;
 use Zend\Config\Config;
+use Zend\Stdlib\ArrayObject;
 
+/**
+ * Class RouteModel
+ * @package Backend
+ * @subpackage Models
+ */
 class RouteModel {
+    /**
+     * @var \Backend\Database
+     */
     private $db;
+
+    /**
+     * @var |Zend\Config\Config
+     */
     private $config;
 
+    /**
+     * RouteModel constructor.
+     * @param   \Zend\Config\Config         $config
+     */
     public function __construct(Config $config) {
         $this->config = $config;
         $this->db = new Database(
@@ -19,6 +36,16 @@ class RouteModel {
         );
     }
 
+    /**
+     * Save a route to the database
+     *
+     * @param   int         $id_user        User id
+     * @param   string      $start_date     Start date
+     * @param   string      $route          JSON Route array
+     * @param   float       $kms            Total kilometers
+     * @throws  \Backend\Exceptions\RouteException
+     * @throws  \Exception
+     */
     public function saveRoute($id_user, $start_date, $route, $kms) {
         $id_user = (int) $id_user;
         $kms = (float) $kms;
@@ -58,6 +85,14 @@ class RouteModel {
         ));
     }
 
+    /**
+     * Get a single route
+     *
+     * @param   int         $id_route       Route id
+     * @param   int         $id_user        User id
+     * @return  array
+     * @throws  \Backend\Exceptions\RouteException
+     */
     public function getRouteById($id_route, $id_user) {
         $id_route = (int) $id_route;
         $id_user = (int) $id_user;
@@ -99,6 +134,15 @@ class RouteModel {
         return $this->prepare_row($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
+    /**
+     * Edit a route
+     *
+     * @param   int         $id_route       Route id
+     * @param   int         $id_user        User id
+     * @param   string      $description    Description
+     * @param   boolean     $paid           Is the route paid or not
+     * @throws  \Backend\Exceptions\RouteException
+     */
     public function editRoute($id_route, $id_user, $description, $paid) {
         $id_route = (int) $id_route;
         $id_user = (int) $id_user;
@@ -136,6 +180,13 @@ class RouteModel {
         ));
     }
 
+    /**
+     * Delete a route
+     *
+     * @param   int         $id_route       Route id
+     * @param   int         $id_user        User id
+     * @throws  \Backend\Exceptions\RouteException
+     */
     public function deleteRoute($id_route, $id_user) {
         $id_route = (int) $id_route;
         $id_user = (int) $id_user;
@@ -159,6 +210,15 @@ class RouteModel {
         ));
     }
 
+    /**
+     * Get all the routes by a specific user
+     *
+     * @param   int         $id_user        User id
+     * @param   int         $page_number    Page number (used for pagination)
+     * @return  array
+     * @throws  \Backend\Exceptions\RouteException
+     * @throws  \Exception
+     */
     public function getRoutesByUserId($id_user, $page_number) {
         $id_user = (int) $id_user;
         $page_number = (int) $page_number;
@@ -212,6 +272,13 @@ class RouteModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Get total kilometers driven by a specific user and are not yet paid
+     *
+     * @param   int         $id_user        User id
+     * @return  float
+     * @throws  \Backend\Exceptions\RouteException
+     */
     public function getTotalKmsByUserId($id_user) {
         $id_user = (int) $id_user;
 
@@ -234,9 +301,16 @@ class RouteModel {
             ":id_user" => $id_user
         ));
 
-        return $stmt->fetch(\PDO::FETCH_OBJ)->kms;
+        return (float) $stmt->fetch(\PDO::FETCH_OBJ)->kms;
     }
 
+    /**
+     * Get total price
+     *
+     * @param   int         $id_user        User id
+     * @return  float
+     * @throws  \Backend\Exceptions\RouteException
+     */
     public function getTotalPriceByUserId($id_user) {
         $id_user = (int) $id_user;
 
@@ -247,6 +321,13 @@ class RouteModel {
         return $this->getTotalKmsByUserId($id_user) * 0.15;
     }
 
+    /**
+     * Count all the routes
+     *
+     * @param   int         $id_user        User id
+     * @return  int
+     * @throws  \Backend\Exceptions\RouteException
+     */
     public function getCountByUserId($id_user) {
         $id_user = (int) $id_user;
 
@@ -267,9 +348,15 @@ class RouteModel {
             ":id_user" => $id_user
         ));
 
-        return $stmt->fetch(\PDO::FETCH_OBJ)->count;
+        return (int) $stmt->fetch(\PDO::FETCH_OBJ)->count;
     }
 
+    /**
+     * Parse all the database data with some more info
+     *
+     * @param   array       $row        Database row
+     * @return  array
+     */
     private function prepare_row($row) {
         $datetime = explode(' ', $row['date']);
         $date = explode('-', $datetime[0]);
@@ -313,6 +400,13 @@ class RouteModel {
         return $row;
     }
 
+    /**
+     * Convert seconds to hours
+     *
+     * @param   int         $sec        Seconds
+     * @param   bool        $padHours   Add leading zero's to the numbers
+     * @return  string
+     */
     private function sec2hms($sec, $padHours = false)
     {
 

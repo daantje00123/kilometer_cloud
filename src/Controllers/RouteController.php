@@ -6,17 +6,45 @@ use Interop\Container\ContainerInterface;
 use Zend\Config\Config;
 use Exception;
 
+/**
+ * Class RouteController
+ * @package Backend
+ * @subpackage Controllers
+ */
 class RouteController {
+    /**
+     * @var \Backend\Models\RouteModel
+     */
     private $model;
+
+    /**
+     * @var \Zend\Config\Config
+     */
     private $config;
+
+    /**
+     * @var \Interop\Container\ContainerInterface
+     */
     private $ci;
 
+    /**
+     * RouteController constructor.
+     * @param   \Interop\Container\ContainerInterface      $ci
+     */
     public function __construct(ContainerInterface $ci) {
         $this->ci = $ci;
         $this->config = new Config(require(__DIR__.'/../../api/v1/config/config.php'));
         $this->model = new RouteModel($this->config);
     }
 
+    /**
+     * Save a new route
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
     public function saveRoute($req, $res) {
         $body = $req->getParsedBody();
 
@@ -41,6 +69,20 @@ class RouteController {
         ));
     }
 
+    /**
+     * Get the route history of a specific user
+     *
+     * Required GET data:
+     *  id_user
+     *
+     * Optional GET data:
+     *  page                Used to get a page for pagination
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
     public function routeHistory($req, $res) {
         $id_user = $req->getAttribute('jwt')->data->id_user;
         $page_number = (isset($_GET['page']) ? $_GET['page'] : 1);
@@ -70,6 +112,17 @@ class RouteController {
         ));
     }
 
+    /**
+     * Get a single route
+     *
+     * Required GET data:
+     *  id_route
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
     public function getSingleRoute($req, $res) {
         $id_route = (isset($req->getQueryParams()['id_route']) ? $req->getQueryParams()['id_route'] : 0);
         $id_user = $req->getAttribute('jwt')->data->id_user;
@@ -91,6 +144,19 @@ class RouteController {
         ));
     }
 
+    /**
+     * Edit route data
+     *
+     * Required POST data:
+     *  id_route
+     *  description
+     *  paid            Can only be either 1 (if paid) or 0 (if not paid)
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
     public function editRoute($req, $res) {
         $body = $req->getParsedBody();
 
@@ -117,6 +183,17 @@ class RouteController {
         ));
     }
 
+    /**
+     * Delete a route
+     *
+     * Required GET data:
+     *  id_route
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
     public function deleteRoute($req, $res) {
         $id_route = (isset($req->getQueryParams()['id_route']) ? $req->getQueryParams()['id_route'] : 0);
         $id_user = $req->getAttribute('jwt')->data->id_user;

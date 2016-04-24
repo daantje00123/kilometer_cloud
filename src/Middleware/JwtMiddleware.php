@@ -5,6 +5,15 @@ use Firebase\JWT\JWT;
 use Zend\Config\Config;
 
 class JwtMiddleware {
+    /**
+     * Generate a new JWT with a valid JWT
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     * @param       callable                                        $next       The next middleware
+     * 
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
     public function __invoke($req, $res, $next) {
         if (!$req->hasHeader('HTTP_AUTHORIZATION') || empty($req->getHeader('HTTP_AUTHORIZATION')[0])) {
             return $res->withJson(array(

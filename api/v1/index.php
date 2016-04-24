@@ -42,7 +42,7 @@ $app->group('/protected', function() {
     // Delete route
     $this->delete('/route', '\Backend\Controllers\RouteController:deleteRoute');
 
-    // Used to generate a new JWT with a valid JWT
+    // Generate a new JWT with a valid JWT
     $this->get('/ping', '\Backend\Controllers\JwtController:ping');
 })->add(new \Backend\Middleware\JwtMiddleware());
 
