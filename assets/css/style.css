@@ -241,14 +241,14 @@ button.big.green:hover {
     margin-bottom: 15px;
 }
 
-.form-group label {
+.form-group label:first-child {
     float: left;
     width: 25%;
 }
 
-.form-group input {
+.form-group input[type="text"] {
     float: right;
-    width: 70%;
+    width: 75%;
 }
 
 #routeInfo p {

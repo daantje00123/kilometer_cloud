@@ -6,6 +6,7 @@
         var vm = this;
         vm.id_route = $routeParams.id;
         vm.description = "";
+        vm.paid = 0;
 
         if (!vm.id_route) {
             $location.path('/routes');
@@ -14,6 +15,7 @@
         $http.get('/api/v1/protected/route?id_route='+vm.id_route)
             .success(function(data) {
                 vm.description = data.route.omschrijving;
+                vm.paid = data.route.betaald;
             })
             .error(function(data) {
                 console.log(data);
@@ -23,7 +25,8 @@
         vm.save = function() {
             $http.put('/api/v1/protected/route', {
                 id_route: vm.id_route,
-                description: vm.description
+                description: vm.description,
+                paid: vm.paid
             })
                 .success(function(data) {
                     $location.path('/routes');

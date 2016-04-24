@@ -151,9 +151,10 @@ $app->group('/protected', function() use ($jwt_model, $route_model) {
         $id_user = $req->getAttribute('jwt')->data->id_user;
         $id_route = (isset($body['id_route']) ? $body['id_route'] : null);
         $description = (isset($body['description']) ? $body['description'] : null);
+        $paid = (isset($body['paid']) ? $body['paid'] : null);
         
         try {
-            $route_model->editRoute($id_route, $id_user, $description);
+            $route_model->editRoute($id_route, $id_user, $description, $paid);
             $route = $route_model->getRouteById($id_route, $id_user);
         } catch (\Backend\Exceptions\RouteException $e) {
             return $res->withJson(array(

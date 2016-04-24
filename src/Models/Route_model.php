@@ -99,10 +99,11 @@ class Route_model {
         return $this->prepare_row($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
-    public function editRoute($id_route, $id_user, $description) {
+    public function editRoute($id_route, $id_user, $description, $paid) {
         $id_route = (int) $id_route;
         $id_user = (int) $id_user;
         $description = (string) $description;
+        $paid = (bool) $paid;
 
         if (empty($id_route) || empty($id_user)) {
             throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
@@ -122,13 +123,15 @@ class Route_model {
             UPDATE
                 routes
             SET
-                omschrijving = :description
+                omschrijving = :description,
+                betaald = :paid
             WHERE
                 id_route = :id_route
         ");
 
         $stmt->execute(array(
             ":description" => $description,
+            ":paid" => $paid,
             ":id_route" => $id_route
         ));
     }
@@ -223,6 +226,8 @@ class Route_model {
                 routes
             WHERE
                 id_user = :id_user
+            AND
+                betaald = 0
         ");
 
         $stmt->execute(array(
@@ -308,7 +313,7 @@ class Route_model {
         return $row;
     }
 
-    private function sec2hms ($sec, $padHours = false)
+    private function sec2hms($sec, $padHours = false)
     {
 
         // start with a blank string
