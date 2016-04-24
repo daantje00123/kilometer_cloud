@@ -2,6 +2,7 @@
     angular.module('kmApp')
         .controller('routesEditController', routesEditController);
 
+    routesEditController.$inject = ['$routeParams', '$location', '$http'];
     function routesEditController($routeParams, $location, $http) {
         var vm = this;
         vm.id_route = $routeParams.id;

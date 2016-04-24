@@ -17,7 +17,7 @@
         }])
         .factory("authFactory", authFactory)
         .factory("httpRequestInterceptor", httpRequestInterceptor)
-        .run(function($q, $http, $location, authFactory, $interval) {
+        .run(['$q', '$http', '$location', 'authFactory', '$interval', function($q, $http, $location, authFactory, $interval) {
             $http.get('/api/v1/protected/ping').success(function(data) {
                 authFactory.setLoggedin(true);
                 authFactory.setJwt(data.jwt);
@@ -37,9 +37,10 @@
                     $location.path('/login');
                 });
             }, 30000);
-        });
+        }]);
 
-    var checkLoggedin = function($q, $http, $location, authFactory) {
+    checkLoggedin.$inject = ['$q', '$http', '$location', 'authFactory'];
+    function checkLoggedin($q, $http, $location, authFactory) {
         var deffered = $q.defer();
 
         $http.get('/api/v1/protected/ping').success(function(data) {
@@ -54,8 +55,9 @@
         });
 
         return deffered.promise;
-    };
+    }
 
+    config.$inject = ['$httpProvider', '$routeProvider', '$locationProvider', 'uiGmapGoogleMapApiProvider'];
     function config($httpProvider, $routeProvider, $locationProvider, uiGmapGoogleMapApiProvider) {
         $httpProvider.interceptors.push('httpRequestInterceptor');
 
@@ -120,6 +122,7 @@
         });
     }
 
+    authFactory.$inject = ['$sessionStorage'];
     function authFactory($sessionStorage) {
         var factory = {
             loggedin: false,
@@ -147,6 +150,7 @@
         return factory;
     }
 
+    httpRequestInterceptor.$inject = ['authFactory'];
     function httpRequestInterceptor(authFactory) {
         return {
             request: function (config) {

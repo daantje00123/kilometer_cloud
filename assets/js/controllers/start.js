@@ -2,7 +2,8 @@
     angular.module('kmApp')
         .controller('startController', startController);
 
-    function startController($scope, uiGmapGoogleMapApi, uiGmapIsReady, $location, $http, $httpParamSerializer, authFactory) {
+    startController.$inject = ['uiGmapGoogleMapApi', 'uiGmapIsReady', '$location', '$http', '$httpParamSerializer', 'authFactory'];
+    function startController(uiGmapGoogleMapApi, uiGmapIsReady, $location, $http, $httpParamSerializer, authFactory) {
         var vm = this;
 
         vm.map = {

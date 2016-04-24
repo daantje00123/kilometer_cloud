@@ -2,6 +2,7 @@
     angular.module('kmApp')
         .controller('loginController', loginController);
 
+    loginController.$inject = ['$http', 'authFactory', '$location'];
     function loginController($http, authFactory, $location) {
         var vm = this;
         vm.username = "";

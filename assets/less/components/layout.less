@@ -1,0 +1,138 @@
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.titlebar, .actionbar {
+  background-color: #67cb74;
+  padding: 0 15px;
+  color: white;
+  min-height: 55px;
+}
+
+.titlebar a, .actionbar a {
+  color: white;
+  text-decoration: none;
+}
+
+.title {
+  font-weight: 400;
+}
+
+.titlebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.actionbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.col33 {
+  width: 33%;
+  display: inline-block;
+}
+
+@media screen and (max-width: 768px) {
+  .col33 {
+    width: 30%;
+  }
+}
+
+.col33:nth-child(2) {
+  text-align: center;
+}
+
+.col33:nth-child(3) {
+  text-align: right;
+}
+
+.flexWrapper {
+  height: ~"calc(100% - 110px)";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.big.green {
+  display: block;
+  width: 100%;
+  border-radius: 0;
+  background-color: #67cb74;
+  border: 0;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 15px;
+  color:white;
+  margin-bottom: 20px;
+}
+
+button.big.green:last-child {
+  margin-bottom: 0;
+}
+
+button.big.green:hover {
+  background-color: #5bb561;
+}
+
+.container {
+  padding: 0 15px;
+}
+
+.wrapper {
+  position: fixed;
+  top: 55px;
+  left: 0;
+  right: 0;
+  bottom: 55px;
+  overflow: auto;
+}
+
+.pagination {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+}
+
+.pagination li {
+  display:inline-block;
+}
+
+.pagination li > a {
+  margin-left: -1px;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  text-align: center;
+  display: block;
+  text-decoration: none;
+  color: #67cb74;
+}
+
+.pagination li:first-child > a {
+  margin-left: 0;
+}
+
+.pagination li.disabled > a, .pagination li.active > a {
+  color: #ccc;
+  cursor: default;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label:first-child {
+  float: left;
+  width: 25%;
+}
+
+.form-group input[type="text"] {
+  float: right;
+  width: 75%;
+}

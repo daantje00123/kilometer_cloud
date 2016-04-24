@@ -2,6 +2,7 @@
     angular.module('kmApp')
         .controller('homeController', homeController);
 
+    homeController.$inject = ['$location'];
     function homeController($location) {
         var vm = this;
 

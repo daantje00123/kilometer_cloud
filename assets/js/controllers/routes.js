@@ -2,6 +2,7 @@
     angular.module('kmApp')
         .controller('routesController', routesController);
 
+    routesController.$inject = ['$http', '$location', '$filter'];
     function routesController($http, $location, $filter) {
         var vm = this;
 
@@ -83,6 +84,11 @@
         };
 
         vm.batchDelete = function() {
+            if (!confirm("Weet u zeker dat u deze ritten wilt verwijderen?")) {
+                vm.checked = [];
+                return;
+            }
+
             var items = getCheckedItems();
 
             $http.delete('/api/v1/protected/batch/routes/delete?routes='+JSON.stringify(items))
