@@ -1,6 +1,5 @@
 /api/v1/config/config.php
 /.idea/
 /bower_components/
-/backend/application/config/database.php
 /vendor/
 /node_modules/
