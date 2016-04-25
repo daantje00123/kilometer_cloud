@@ -75,13 +75,28 @@ class RouteController extends Controller {
      */
     public function routeHistory($req, $res) {
         $id_user = $req->getAttribute('jwt')->data->id_user;
-        $page_number = (isset($_GET['page']) ? $_GET['page'] : 1);
+        $page_number = (isset($req->getQueryParams()['page']) ? $req->getQueryParams()['page'] : 1);
+        $month = (isset($req->getQueryParams()['month']) ? $req->getQueryParams()['month']: 0);
+        $year = (isset($req->getQueryParams()['year']) ? $req->getQueryParams()['year']: date('Y'));
+        $paid = (isset($req->getQueryParams()['paid']) ? $req->getQueryParams()['paid']: 2);
+
+        if ($month > 12) {
+            $month = 0;
+        }
+
+        if ($year < 2016) {
+            $year = 2016;
+        }
+
+        if ($paid < 0 || $paid > 2) {
+            $paid = 2;
+        }
 
         try {
-            $routes = $this->model->getRoutesByUserId($id_user, $page_number);
+            $routes = $this->model->getRoutesByUserId($id_user, $page_number, $month, $year, $paid);
             $kms = $this->model->getTotalKmsByUserId($id_user);
             $price = $this->model->getTotalPriceByUserId($id_user);
-            $count = $this->model->getCountByUserId($id_user);
+            $count = $this->model->getCountByUserId($id_user, $month, $year, $paid);
         } catch (Exception $e) {
             return $res->withJson(array(
                 'success' => false,
@@ -98,6 +113,11 @@ class RouteController extends Controller {
                 'kms' => $kms,
                 'price' => $price,
                 'count' => $count
+            ),
+            'filter' => array(
+                'month' => $month,
+                'year' => $year,
+                'paid' => $paid
             )
         ));
     }

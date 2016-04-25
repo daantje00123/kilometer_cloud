@@ -12,6 +12,14 @@
         vm.checked = [];
         vm.totals = [];
 
+        var date = new Date();
+
+        vm.filter = {
+            month: (date.getMonth()+1).toString(),
+            year: date.getFullYear().toString(),
+            paid: "0"
+        };
+
         vm.totalRoutes = 0;
         vm.routesPerPage = 10;
         vm.pagination = {
@@ -46,6 +54,10 @@
             return trues.length;
         };
 
+        vm.filterSubmit = function() {
+            getResultsPage(1);
+        };
+
         vm.view = function(route) {
             $location.path('/routes/view/'+route.id_route);
         };
@@ -77,6 +89,7 @@
             })
                 .success(function(data) {
                     getResultsPage(vm.pagination.current);
+                    vm.selectedAll = false;
                     vm.checked = [];
                 })
                 .error(function(data) {
@@ -96,6 +109,7 @@
             $http.delete('/api/v1/protected/batch/routes/delete?routes='+JSON.stringify(items))
                 .success(function(data) {
                     getResultsPage(vm.pagination.current);
+                    vm.selectedAll = false;
                 })
                 .error(function(data) {
                     console.log(data);
@@ -104,11 +118,12 @@
         };
 
         function getResultsPage(pageNumber) {
-            $http.get('/api/v1/protected/routes?page='+pageNumber)
+            $http.get('/api/v1/protected/routes?page='+pageNumber+'&month='+vm.filter.month+'&year='+vm.filter.year+'&paid='+vm.filter.paid)
                 .success(function(data) {
                     vm.routes = data.routes;
                     vm.totals = data.totals;
                     vm.totalRoutes = data.totals.count;
+                    vm.filter = data.filter;
                 })
                 .error(function(data) {
                     console.log(data);

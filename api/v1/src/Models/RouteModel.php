@@ -215,16 +215,34 @@ class RouteModel {
      *
      * @param   int         $id_user        User id
      * @param   int         $page_number    Page number (used for pagination)
+     * @param   int         $month          Filter month
+     * @param   int         $year           Filter year
+     * @param   int         $paid           Filter paid (0 = not paid, 1 = paid, 2 = all)
      * @return  array
-     * @throws  \Backend\Exceptions\RouteException
+     * @throws  RouteException
      * @throws  \Exception
      */
-    public function getRoutesByUserId($id_user, $page_number) {
+    public function getRoutesByUserId($id_user, $page_number, $month = 0, $year = 0, $paid = 2) {
         $id_user = (int) $id_user;
         $page_number = (int) $page_number;
+        $month = (int) $month;
+        $year = (int) $year;
+        $paid = (int) $paid;
 
         if (empty($id_user)) {
             throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
+        }
+
+        if ($month > 12) {
+            $month = 0;
+        }
+
+        if ($year < 2016) {
+            $year = 2016;
+        }
+
+        if ($paid < 0 || $paid > 2) {
+            $paid = 2;
         }
 
         if ($page_number < 1) {
@@ -233,7 +251,7 @@ class RouteModel {
 
         $offset = ($page_number - 1) * 10;
 
-        $sql = sprintf("
+        $sql = "
             SELECT
                 a.id_route,
                 a.id_user,
@@ -254,8 +272,21 @@ class RouteModel {
                 auth_users AS b ON a.id_user = b.id_user
             WHERE
                 a.id_user = :id_user
-            ORDER BY start_date DESC
-            LIMIT 10 OFFSET %d", $offset);
+            ";
+
+        if ($month > 0) {
+            $sql .= sprintf(" AND MONTH(a.start_date) = %d", $month);
+        }
+
+        $sql .= sprintf(" AND YEAR(a.start_date) = %d", $year);
+
+        if ($paid != 2) {
+            $sql .= " AND a.betaald = ".$paid;
+        }
+
+        $sql .= sprintf(" ORDER BY a.start_date DESC LIMIT 10 OFFSET %d", $offset);
+
+        //var_dump($sql);exit;
 
         try {
             $this->db->getPDO()->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -325,28 +356,62 @@ class RouteModel {
      * Count all the routes
      *
      * @param   int         $id_user        User id
+     * @param   int         $month          Filter month
+     * @param   int         $year           Filter year
+     * @param   int         $paid           Filter paid
      * @return  int
-     * @throws  \Backend\Exceptions\RouteException
+     * @throws  RouteException
      */
-    public function getCountByUserId($id_user) {
+    public function getCountByUserId($id_user, $month = 0, $year = 0, $paid = 2) {
         $id_user = (int) $id_user;
+        $month = (int) $month;
+        $year = (int) $year;
+        $paid = (int) $paid;
 
         if (empty($id_user)) {
             throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
         }
 
-        $stmt = $this->db->prepare("
+        if ($month > 12) {
+            $month = 0;
+        }
+
+        if ($year < 2016) {
+            $year = 2016;
+        }
+
+        if ($paid < 0 || $paid > 2) {
+            $paid = 2;
+        }
+
+        $sql = "
             SELECT
                 COUNT(*) AS count
             FROM
                 routes
             WHERE
                 id_user = :id_user
-        ");
-
-        $stmt->execute(array(
+        ";
+        $params = array(
             ":id_user" => $id_user
-        ));
+        );
+
+        if ($month > 0) {
+            $sql .= " AND MONTH(start_date) = :month";
+            $params[':month'] = $month;
+        }
+
+        $sql .= " AND YEAR(start_date) = :year";
+        $params[':year'] = $year;
+
+        if ($paid != 2) {
+            $sql .= " AND betaald = :paid";
+            $params[':paid'] = $paid;
+        }
+
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->execute($params);
 
         return (int) $stmt->fetch(\PDO::FETCH_OBJ)->count;
     }

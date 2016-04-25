@@ -3,57 +3,94 @@
 </div>
 
 <div class="wrapper">
-    <div class="container clearfix">
-        <h1 class="pull-left">Ritten geschiedenis</h1>
-    </div>
-    <table ng-if="vm.routes.length > 0" class="table">
-        <thead>
-        <tr>
-            <th><input type="checkbox" ng-model="vm.selectedAll" ng-click="vm.checkAll()" /></th>
-            <th>Omschrijving</th>
-            <th>Start datum</th>
-            <th>Stop datum</th>
-            <th>Aantal kilometers</th>
-            <th>Betaald</th>
-            <th>Kosten</th>
-            <th>Acties</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr dir-paginate="route in vm.routes|itemsPerPage:10" total-items="vm.totalRoutes" current-page="vm.pagination.current">
-            <td><input type="checkbox" ng-model="vm.checked[route.id_route]" /></td>
-            <td>{{route.omschrijving}}</td>
-            <td>{{route.start_date | dateToISO | date:"dd-MM-yyyy HH:mm"}}</td>
-            <td>{{route.date | dateToISO | date:"dd-MM-yyyy HH:mm"}}</td>
-            <td>{{route.kms | number:2}} km</td>
-            <td>
-                <span ng-if="route.betaald == 0">Nee</span>
-                <span ng-if="route.betaald == 1">Ja</span>
-            </td>
-            <td>&euro;{{route.kms*0.15 | number:2}}</td>
-            <td>
-                <a href="#" ng-click="vm.view(route)"><span class="fa fa-eye"></span></a>
-                <a href="#" ng-click="vm.edit(route)"><span class="fa fa-pencil"></span></a>
-                <a href="#" ng-click="vm.delete(route)"><span class="fa fa-trash"></span></a>
-            </td>
-        </tr>
-        </tbody>
-        <tfoot>
-        <tr>
-            <td></td>
-            <th>Totalen</th>
-            <td></td>
-            <td></td>
-            <td>{{vm.totals.kms|number:2}} km</td>
-            <td></td>
-            <td>&euro;{{vm.totals.price|number:2}}</td>
-            <td></td>
-        </tr>
-        </tfoot>
-    </table>
-    <p ng-if="vm.routes.length < 1">De ritten worden geladen... <span class="fa fa-spin fa-spinner"></span></p>
-
     <div class="container">
+        <h1>Ritten geschiedenis</h1>
+
+        <p id="routeFilter">
+            <form ng-submit="vm.filterSubmit()">
+                <b>Filteren</b>
+                Maand
+                <select ng-model="vm.filter.month">
+                    <option value="0">Alle</option>
+                    <option value="1">Januari</option>
+                    <option value="2">Februari</option>
+                    <option value="3">Maart</option>
+                    <option value="4">April</option>
+                    <option value="5">Mei</option>
+                    <option value="6">Juni</option>
+                    <option value="7">Juli</option>
+                    <option value="8">Augustus</option>
+                    <option value="9">September</option>
+                    <option value="10">Oktober</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                Jaar
+                <select ng-model="vm.filter.year">
+                    <option value="2016">2016</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                </select>
+                Betaald
+                <select ng-model="vm.filter.paid">
+                    <option value="2">Alle</option>
+                    <option value="0">Nee</option>
+                    <option value="1">Ja</option>
+                </select>
+                <button type="submit">Filteren</button>
+            </form>
+        </p>
+
+        <table ng-if="vm.routes.length > 0" class="table">
+            <thead>
+            <tr>
+                <th><input type="checkbox" ng-model="vm.selectedAll" ng-click="vm.checkAll()" /></th>
+                <th>Omschrijving</th>
+                <th>Start datum</th>
+                <th>Stop datum</th>
+                <th>Aantal kilometers</th>
+                <th>Betaald</th>
+                <th>Kosten</th>
+                <th>Acties</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr dir-paginate="route in vm.routes|itemsPerPage:10" total-items="vm.totalRoutes" current-page="vm.pagination.current">
+                <td><input type="checkbox" ng-model="vm.checked[route.id_route]" /></td>
+                <td>{{route.omschrijving}}</td>
+                <td>{{route.start_date | dateToISO | date:"dd-MM-yyyy HH:mm"}}</td>
+                <td>{{route.date | dateToISO | date:"dd-MM-yyyy HH:mm"}}</td>
+                <td>{{route.kms | number:2}} km</td>
+                <td>
+                    <span ng-if="route.betaald == 0">Nee</span>
+                    <span ng-if="route.betaald == 1">Ja</span>
+                </td>
+                <td>&euro;{{route.kms*0.15 | number:2}}</td>
+                <td>
+                    <a href="#" ng-click="vm.view(route)"><span class="fa fa-eye"></span></a>
+                    <a href="#" ng-click="vm.edit(route)"><span class="fa fa-pencil"></span></a>
+                    <a href="#" ng-click="vm.delete(route)"><span class="fa fa-trash"></span></a>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <th>Nog te betalen</th>
+                <td></td>
+                <td></td>
+                <td>{{vm.totals.kms|number:2}} km</td>
+                <td></td>
+                <td>&euro;{{vm.totals.price|number:2}}</td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+        <p ng-if="vm.routes.length < 1">Er zijn geen routes gevonden</p>
+
         <dir-pagination-controls
                 max-size="5"
                 direction-links="true"
