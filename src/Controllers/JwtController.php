@@ -3,6 +3,7 @@ namespace Backend\Controllers;
 
 use Backend\Models\JwtModel;
 use Backend\Models\UserModel;
+use Firebase\JWT\JWT;
 use Interop\Container\ContainerInterface;
 use Zend\Config\Config;
 
@@ -82,7 +83,8 @@ class JwtController extends Controller {
             'success' => true,
             'message' => 'User is successfully authenticated',
             'jwt' => $jwt,
-            'id_user' => $user->id_user
+            'id_user' => $user->id_user,
+            'user_data' => $user
         ));
     }
 
@@ -102,6 +104,8 @@ class JwtController extends Controller {
     public function ping($req, $res) {
         try {
             $new_jwt = $this->jwtModel->regenerateJwt($req->getAttribute('jwt'));
+            $decoded = JWT::decode($new_jwt, $this->config->jwt->get('key'), array($this->config->jwt->get('algorithm')));
+            $user = $this->userModel->getUserById($decoded->data->id_user);
         } catch(Exception $e) {
             return $res->withJson(array(
                 'success' => false,
@@ -113,7 +117,9 @@ class JwtController extends Controller {
         return $res->withJson(array(
             'success' => true,
             'message' => 'pong!',
-            'jwt' => $new_jwt
+            'jwt' => $new_jwt,
+            'id_user' => $user->id_user,
+            'user_data' => $user
         ));
     }
 }

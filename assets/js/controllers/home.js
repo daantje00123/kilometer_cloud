@@ -2,9 +2,11 @@
     angular.module('kmApp')
         .controller('homeController', homeController);
 
-    homeController.$inject = ['$location'];
-    function homeController($location) {
+    homeController.$inject = ['$location', 'authFactory'];
+    function homeController($location, authFactory) {
         var vm = this;
+
+        vm.user = authFactory.getUserData();
 
         vm.start = function() {
             $location.path('/start');

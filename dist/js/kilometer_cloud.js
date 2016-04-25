@@ -21,20 +21,44 @@
         .run(['$q', '$http', '$location', 'authFactory', '$interval', function($q, $http, $location, authFactory, $interval) {
             $http.get('/api/v1/protected/ping').success(function(data) {
                 authFactory.setLoggedin(true);
-                authFactory.setJwt(data.jwt);
+
+                if (data.jwt) {
+                    authFactory.setJwt(data.jwt);
+                }
+
+                if (data.id_user) {
+                    authFactory.setUserId(data.id_user);
+                }
+
+                if (data.user_data) {
+                    authFactory.setUserData(data.user_data);
+                }
             }).error(function() {
                 authFactory.setLoggedin(false);
                 authFactory.deleteJwt();
+                authFactory.deleteUserData();
                 $location.path('/login');
             });
 
             $interval(function() {
                 $http.get('/api/v1/protected/ping').success(function(data) {
                     authFactory.setLoggedin(true);
-                    authFactory.setJwt(data.jwt);
+
+                    if (data.jwt) {
+                        authFactory.setJwt(data.jwt);
+                    }
+
+                    if (data.id_user) {
+                        authFactory.setUserId(data.id_user);
+                    }
+
+                    if (data.user_data) {
+                        authFactory.setUserData(data.user_data);
+                    }
                 }).error(function() {
                     authFactory.setLoggedin(false);
                     authFactory.deleteJwt();
+                    authFactory.deleteUserData();
                     $location.path('/login');
                 });
             }, 30000);
@@ -46,11 +70,24 @@
 
         $http.get('/api/v1/protected/ping').success(function(data) {
             authFactory.setLoggedin(true);
-            authFactory.setJwt(data.jwt);
+
+            if (data.jwt) {
+                authFactory.setJwt(data.jwt);
+            }
+
+            if (data.id_user) {
+                authFactory.setUserId(data.id_user);
+            }
+
+            if (data.user_data) {
+                authFactory.setUserData(data.user_data);
+            }
+
             deffered.resolve();
         }).error(function() {
             authFactory.setLoggedin(false);
             authFactory.deleteJwt();
+            authFactory.deleteUserData();
             deffered.reject();
             $location.path('/login');
         });
@@ -127,7 +164,6 @@
     function authFactory($sessionStorage) {
         var factory = {
             loggedin: false,
-            id_user: 0,
             setLoggedin: function(status) {
                 factory.loggedin = status;
             },
@@ -138,13 +174,22 @@
                 return $sessionStorage.jwt;
             },
             setUserId: function(id_user) {
-                factory.id_user = id_user;
+                $sessionStorage.id_user = id_user;
             },
             getUserId: function() {
-                return factory.id_user;
+                return $sessionStorage.id_user;
             },
             deleteJwt: function() {
                 $sessionStorage.jwt = undefined;
+            },
+            setUserData: function(user_data) {
+                $sessionStorage.user_data = user_data;
+            },
+            getUserData: function() {
+                return $sessionStorage.user_data;
+            },
+            deleteUserData: function() {
+                $sessionStorage.user_data = undefined;
             }
         };
 
@@ -177,9 +222,11 @@
     angular.module('kmApp')
         .controller('homeController', homeController);
 
-    homeController.$inject = ['$location'];
-    function homeController($location) {
+    homeController.$inject = ['$location', 'authFactory'];
+    function homeController($location, authFactory) {
         var vm = this;
+
+        vm.user = authFactory.getUserData();
 
         vm.start = function() {
             $location.path('/start');
@@ -246,9 +293,11 @@
     angular.module('kmApp')
         .controller('routesController', routesController);
 
-    routesController.$inject = ['$http', '$location', '$filter'];
-    function routesController($http, $location, $filter) {
+    routesController.$inject = ['$http', '$location', '$filter', 'authFactory'];
+    function routesController($http, $location, $filter, authFactory) {
         var vm = this;
+
+        vm.user = authFactory.getUserData();
 
         vm.routes = [];
         vm.checked = [];
@@ -375,9 +424,12 @@
     angular.module('kmApp')
         .controller('routesEditController', routesEditController);
 
-    routesEditController.$inject = ['$routeParams', '$location', '$http'];
-    function routesEditController($routeParams, $location, $http) {
+    routesEditController.$inject = ['$routeParams', '$location', '$http', 'authFactory'];
+    function routesEditController($routeParams, $location, $http, authFactory) {
         var vm = this;
+
+        vm.user = authFactory.getUserData();
+
         vm.id_route = $routeParams.id;
         vm.description = "";
         vm.paid = 0;
@@ -420,9 +472,11 @@
     angular.module('kmApp')
         .controller('routesViewController', routesViewController);
 
-    routesViewController.$inject = ['$http', '$location', '$routeParams', 'uiGmapGoogleMapApi', 'uiGmapIsReady'];
-    function routesViewController($http, $location, $routeParams, uiGmapGoogleMapApi, uiGmapIsReady) {
+    routesViewController.$inject = ['$http', '$location', '$routeParams', 'uiGmapGoogleMapApi', 'uiGmapIsReady', 'authFactory'];
+    function routesViewController($http, $location, $routeParams, uiGmapGoogleMapApi, uiGmapIsReady, authFactory) {
         var vm = this;
+
+        vm.user = authFactory.getUserData();
 
         vm.id_route = $routeParams.id;
         vm.route = {};
@@ -492,6 +546,8 @@
     startController.$inject = ['uiGmapGoogleMapApi', 'uiGmapIsReady', '$location', '$http', '$httpParamSerializer', 'authFactory'];
     function startController(uiGmapGoogleMapApi, uiGmapIsReady, $location, $http, $httpParamSerializer, authFactory) {
         var vm = this;
+
+        vm.user = authFactory.getUserData();
 
         vm.map = {
             center: {

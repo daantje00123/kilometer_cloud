@@ -2,9 +2,11 @@
     angular.module('kmApp')
         .controller('routesController', routesController);
 
-    routesController.$inject = ['$http', '$location', '$filter'];
-    function routesController($http, $location, $filter) {
+    routesController.$inject = ['$http', '$location', '$filter', 'authFactory'];
+    function routesController($http, $location, $filter, authFactory) {
         var vm = this;
+
+        vm.user = authFactory.getUserData();
 
         vm.routes = [];
         vm.checked = [];

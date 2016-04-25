@@ -20,20 +20,44 @@
         .run(['$q', '$http', '$location', 'authFactory', '$interval', function($q, $http, $location, authFactory, $interval) {
             $http.get('/api/v1/protected/ping').success(function(data) {
                 authFactory.setLoggedin(true);
-                authFactory.setJwt(data.jwt);
+
+                if (data.jwt) {
+                    authFactory.setJwt(data.jwt);
+                }
+
+                if (data.id_user) {
+                    authFactory.setUserId(data.id_user);
+                }
+
+                if (data.user_data) {
+                    authFactory.setUserData(data.user_data);
+                }
             }).error(function() {
                 authFactory.setLoggedin(false);
                 authFactory.deleteJwt();
+                authFactory.deleteUserData();
                 $location.path('/login');
             });
 
             $interval(function() {
                 $http.get('/api/v1/protected/ping').success(function(data) {
                     authFactory.setLoggedin(true);
-                    authFactory.setJwt(data.jwt);
+
+                    if (data.jwt) {
+                        authFactory.setJwt(data.jwt);
+                    }
+
+                    if (data.id_user) {
+                        authFactory.setUserId(data.id_user);
+                    }
+
+                    if (data.user_data) {
+                        authFactory.setUserData(data.user_data);
+                    }
                 }).error(function() {
                     authFactory.setLoggedin(false);
                     authFactory.deleteJwt();
+                    authFactory.deleteUserData();
                     $location.path('/login');
                 });
             }, 30000);
@@ -45,11 +69,24 @@
 
         $http.get('/api/v1/protected/ping').success(function(data) {
             authFactory.setLoggedin(true);
-            authFactory.setJwt(data.jwt);
+
+            if (data.jwt) {
+                authFactory.setJwt(data.jwt);
+            }
+
+            if (data.id_user) {
+                authFactory.setUserId(data.id_user);
+            }
+
+            if (data.user_data) {
+                authFactory.setUserData(data.user_data);
+            }
+
             deffered.resolve();
         }).error(function() {
             authFactory.setLoggedin(false);
             authFactory.deleteJwt();
+            authFactory.deleteUserData();
             deffered.reject();
             $location.path('/login');
         });
@@ -126,7 +163,6 @@
     function authFactory($sessionStorage) {
         var factory = {
             loggedin: false,
-            id_user: 0,
             setLoggedin: function(status) {
                 factory.loggedin = status;
             },
@@ -137,13 +173,22 @@
                 return $sessionStorage.jwt;
             },
             setUserId: function(id_user) {
-                factory.id_user = id_user;
+                $sessionStorage.id_user = id_user;
             },
             getUserId: function() {
-                return factory.id_user;
+                return $sessionStorage.id_user;
             },
             deleteJwt: function() {
                 $sessionStorage.jwt = undefined;
+            },
+            setUserData: function(user_data) {
+                $sessionStorage.user_data = user_data;
+            },
+            getUserData: function() {
+                return $sessionStorage.user_data;
+            },
+            deleteUserData: function() {
+                $sessionStorage.user_data = undefined;
             }
         };
 

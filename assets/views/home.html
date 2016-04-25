@@ -1,4 +1,4 @@
-<div class="titlebar">
+<div class="titlebar clearfix">
     <p class="pull-right"><a href="#" ng-click="ctrl.logout()">Uitloggen <span class="fa fa-sign-out"></span></a></p>
 </div>
 <div class="flexWrapper">
@@ -8,4 +8,6 @@
         <button ng-click="ctrl.history()" class="big green">Ritten geschiedenis<span class="fa fa-road"></span></button>
     </div>
 </div>
-<div class="actionbar"></div>
+<div class="actionbar clearfix">
+    <p class="pull-right"><span class="fa fa-user"></span> {{ctrl.user.firstname}}<span ng-show="ctrl.user.middlename"> {{ctrl.user.middlename}}</span> {{ctrl.user.lastname}}</p>
+</div>

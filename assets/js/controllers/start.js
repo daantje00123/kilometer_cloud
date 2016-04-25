@@ -6,6 +6,8 @@
     function startController(uiGmapGoogleMapApi, uiGmapIsReady, $location, $http, $httpParamSerializer, authFactory) {
         var vm = this;
 
+        vm.user = authFactory.getUserData();
+
         vm.map = {
             center: {
                 latitude: 52.092876,

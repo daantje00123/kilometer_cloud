@@ -2,9 +2,12 @@
     angular.module('kmApp')
         .controller('routesEditController', routesEditController);
 
-    routesEditController.$inject = ['$routeParams', '$location', '$http'];
-    function routesEditController($routeParams, $location, $http) {
+    routesEditController.$inject = ['$routeParams', '$location', '$http', 'authFactory'];
+    function routesEditController($routeParams, $location, $http, authFactory) {
         var vm = this;
+
+        vm.user = authFactory.getUserData();
+
         vm.id_route = $routeParams.id;
         vm.description = "";
         vm.paid = 0;

@@ -1,12 +1,12 @@
 <div class="clearfix titlebar">
-    <p class="pull-left title">Meter</p>
-    <p class="pull-right"><a href="#" ng-click="ctrl.delete()">Annuleren <span class="fa fa-times"></span></a></p>
+    <p class="col33 title">Meter</p>
+    <p class="col33"><span class="fa fa-user"></span> {{vm.user.firstname}}<span ng-show="vm.user.middlename"> {{vm.user.middlename}}</span> {{vm.user.lastname}}</p>
+    <p class="col33"><a href="#" ng-click="ctrl.delete()">Annuleren <span class="fa fa-times"></span></a></p>
 </div>
 
 <ui-gmap-google-map center="ctrl.map.center" zoom="ctrl.map.zoom" control="ctrl.map.control" id="meter"></ui-gmap-google-map>
 
 <div class="clearfix actionbar">
-
     <p class="col33">{{ctrl.distance | number:2}} km</p>
     <p class="col33">{{ctrl.speed | number:2}} km/h</p>
     <p class="col33" id="save"><a href="#" ng-click="ctrl.save()">Opslaan <span class="fa fa-floppy-o"></span></a></p>

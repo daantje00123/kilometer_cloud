@@ -64,5 +64,6 @@
 </div>
 
 <div class="actionbar clearfix">
-    <p ng-show="vm.showAction()">Met geselecteerde: <button ng-click="vm.batchPay(1)">Markeren als betaald</button> <button ng-click="vm.batchPay(0)">Markeren als niet betaald</button> <button ng-click="vm.batchDelete()">Verwijderen</button></p>
+    <p ng-show="vm.showAction()" class="pull-left">Met geselecteerde: <button ng-click="vm.batchPay(1)">Markeren als betaald</button> <button ng-click="vm.batchPay(0)">Markeren als niet betaald</button> <button ng-click="vm.batchDelete()">Verwijderen</button></p>
+    <p class="pull-right"><span class="fa fa-user"></span> {{vm.user.firstname}}<span ng-show="vm.user.middlename"> {{vm.user.middlename}}</span> {{vm.user.lastname}}</p>
 </div>

@@ -23,4 +23,6 @@
         </form>
     </div>
 </div>
-<div class="actionbar"></div>
+<div class="actionbar clearfix">
+    <p class="pull-right"><span class="fa fa-user"></span> {{vm.user.firstname}}<span ng-show="vm.user.middlename"> {{vm.user.middlename}}</span> {{vm.user.lastname}}</p>
+</div>

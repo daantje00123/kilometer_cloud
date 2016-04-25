@@ -2,9 +2,11 @@
     angular.module('kmApp')
         .controller('routesViewController', routesViewController);
 
-    routesViewController.$inject = ['$http', '$location', '$routeParams', 'uiGmapGoogleMapApi', 'uiGmapIsReady'];
-    function routesViewController($http, $location, $routeParams, uiGmapGoogleMapApi, uiGmapIsReady) {
+    routesViewController.$inject = ['$http', '$location', '$routeParams', 'uiGmapGoogleMapApi', 'uiGmapIsReady', 'authFactory'];
+    function routesViewController($http, $location, $routeParams, uiGmapGoogleMapApi, uiGmapIsReady, authFactory) {
         var vm = this;
+
+        vm.user = authFactory.getUserData();
 
         vm.id_route = $routeParams.id;
         vm.route = {};
