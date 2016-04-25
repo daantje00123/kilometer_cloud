@@ -22,7 +22,7 @@ class JwtMiddleware {
             ), 403);
         }
 
-        $config = new Config(require(__DIR__.'/../../api/v1/config/config.php'));
+        $config = new Config(require(__DIR__.'/../../config/config.php'));
 
         $jwt = $req->getHeader("HTTP_AUTHORIZATION")[0];
         $jwt = str_replace('Bearer ', "", $jwt);

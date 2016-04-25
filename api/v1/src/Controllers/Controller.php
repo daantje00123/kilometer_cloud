@@ -26,6 +26,6 @@ class Controller {
      */
     public function __construct(ContainerInterface $ci) {
         $this->ci = $ci;
-        $this->config = new Config(require(__DIR__.'/../../api/v1/config/config.php'));
+        $this->config = new Config(require(__DIR__.'/../../config/config.php'));
     }
 }

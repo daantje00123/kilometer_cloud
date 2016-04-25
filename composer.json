@@ -13,6 +13,6 @@
         }
     ],
     "autoload": {
-        "psr-4": {"Backend\\": "src/"}
+        "psr-4": {"Backend\\": "api/v1/src/"}
     }
 }

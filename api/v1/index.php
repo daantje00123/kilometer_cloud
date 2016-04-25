@@ -4,8 +4,6 @@ ini_set('display_errors', 1);
 
 require_once(__DIR__.'/../../vendor/autoload.php');
 
-$config = new \Zend\Config\Config(require __DIR__.'/config/config.php');
-
 $configuration = [
     'settings' => [
         'displayErrorDetails' => true,
@@ -13,14 +11,6 @@ $configuration = [
 ];
 $c = new \Slim\Container($configuration);
 $app = new \Slim\App($c);
-
-$pdo = new PDO('mysql:host='.$config->database->get('host', 'localhost').';dbname='.$config->database->get('database'),
-    $config->database->get('username'),
-    $config->database->get('password')
-);
-
-$user_model = new \Backend\Models\UserModel($config);
-$jwt_model = new \Backend\Models\JwtModel($config, $user_model);
 
 // Generate JWT when the username and password combination is valid
 $app->post('/auth/login', '\Backend\Controllers\JwtController:login');
