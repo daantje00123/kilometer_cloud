@@ -37,6 +37,9 @@
                 authFactory.setLoggedin(false);
                 authFactory.deleteJwt();
                 authFactory.deleteUserData();
+                if ($location.path() == "/register") {
+                    return;
+                }
                 $location.path('/login');
             });
 
@@ -59,6 +62,9 @@
                     authFactory.setLoggedin(false);
                     authFactory.deleteJwt();
                     authFactory.deleteUserData();
+                    if ($location.path() == "/register") {
+                        return;
+                    }
                     $location.path('/login');
                 });
             }, 30000);
@@ -89,6 +95,9 @@
             authFactory.deleteJwt();
             authFactory.deleteUserData();
             deffered.reject();
+            if ($location.path() == "/register") {
+                return;
+            }
             $location.path('/login');
         });
 
@@ -103,6 +112,11 @@
             .when('/login', {
                 templateUrl: 'assets/views/login.html',
                 controller: 'loginController',
+                controllerAs: 'vm'
+            })
+            .when('/register', {
+                templateUrl: 'assets/views/register.html',
+                controller: 'registerController',
                 controllerAs: 'vm'
             })
             .when('/', {

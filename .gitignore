@@ -1,5 +1,5 @@
 /api/v1/config/config.php
 /.idea/
+/api/v1/vendor/
 /bower_components/
-/vendor/
 /node_modules/

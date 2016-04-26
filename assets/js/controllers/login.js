@@ -30,6 +30,10 @@
                 .error(function(data) {
                     alert(data.message);
                 });
-        }
+        };
+
+        vm.gotoRegister = function() {
+            $location.path('/register');
+        };
     }
 })();

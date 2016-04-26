@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require_once(__DIR__.'/../../vendor/autoload.php');
+require_once(__DIR__.'/vendor/autoload.php');
 
 $configuration = [
     'settings' => [
@@ -15,7 +15,13 @@ $app = new \Slim\App($c);
 // Generate JWT when the username and password combination is valid
 $app->post('/auth/login', '\Backend\Controllers\JwtController:login');
 
-// This group is only accessible when a valid JWT is send in the headers
+// Create a new user account
+$app->post('/auth/register', '\Backend\Controllers\UserController:register');
+
+// Activate a new user account
+$app->get('/auth/activate', '\Backend\Controllers\UserController:activate');
+
+// This group is only accessible when a valid JWT is send in the Authorization header
 $app->group('/protected', function() {
     // Get the route history
     $this->get('/routes', '\Backend\Controllers\RouteController:routeHistory');

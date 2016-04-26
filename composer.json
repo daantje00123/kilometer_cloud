@@ -1,10 +1,14 @@
 {
+    "config": {
+        "vendor-dir": "api/v1/vendor"
+    },
     "name": "daantje00123/kilometer_meter",
     "description": "Kilometer meter",
     "require": {
         "slim/slim": "^3.0",
         "firebase/php-jwt": "dev-master",
-        "zendframework/zend-config": "^2.6"
+        "zendframework/zend-config": "^2.6",
+        "phpmailer/phpmailer": "^5.2"
     },
     "authors": [
         {

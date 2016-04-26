@@ -1,0 +1,39 @@
+<div class="titlebar"></div>
+<div id="loginWrapper" class="flexWrapper">
+    <div id="loginContent" class="flexContainer">
+        <h1>Kilometer cloud</h1>
+        <form ng-submit="vm.doRegister()">
+            <div class="input">
+                <span class="fa fa-user required"></span>
+                <input type="text" name="username" id="username" ng-model="vm.user.username" placeholder="Gebruikersnaam" autocorrect="off" autocapitalize="none" />
+            </div>
+            <div class="input">
+                <span class="fa fa-envelope required"></span>
+                <input type="email" name="username" id="email" ng-model="vm.user.email" placeholder="E-mailadres" autocorrect="off" autocapitalize="none" />
+            </div>
+            <div class="input">
+                <span class="fa fa-key required"></span>
+                <input type="password" name="password" id="password1" ng-model="vm.user.password1" placeholder="Wachtwoord" />
+            </div>
+            <div class="input">
+                <span class="fa fa-key required"></span>
+                <input type="password" name="password" id="password2" ng-model="vm.user.password2" placeholder="Controle" />
+            </div>
+            <div class="input">
+                <span class="fa fa-tag required"></span>
+                <input type="text" name="firstname" id="firstname" ng-model="vm.user.firstname" placeholder="Voornaam" />
+            </div>
+            <div class="input">
+                <span class="fa fa-tag"></span>
+                <input type="text" name="middlename" id="middlename" ng-model="vm.user.middlename" placeholder="Tussenvoegsel" />
+            </div>
+            <div class="input">
+                <span class="fa fa-tag required"></span>
+                <input type="text" name="lastname" id="lastname" ng-model="vm.user.lastname" placeholder="Achternaam" />
+            </div>
+            <button type="submit" class="big green">Registreren</button>
+        </form>
+        <small><a href="#" ng-click="vm.gotoLogin()">Terug naar inloggen</a></small>
+    </div>
+</div>
+<div class="actionbar"></div>

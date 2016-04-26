@@ -32,7 +32,7 @@ class JwtController extends Controller {
     public function __construct(ContainerInterface $ci) {
         parent::__construct($ci);
 
-        $this->userModel = new UserModel($this->config);
+        $this->userModel = new UserModel($this->config, $ci);
         $this->jwtModel = new JwtModel($this->config, $this->userModel);
     }
 
