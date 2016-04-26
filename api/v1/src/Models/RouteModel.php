@@ -46,14 +46,14 @@ class RouteModel {
      * @throws  \Backend\Exceptions\RouteException
      * @throws  \Exception
      */
-    public function saveRoute($id_user, $start_date, $route, $kms) {
+    public function saveRoute($id_user, $start_date, $kms) {
         $id_user = (int) $id_user;
         $kms = (float) $kms;
 
         if (
             empty($id_user) ||
             empty($start_date) ||
-            empty($route) ||
+            //empty($route) ||
             empty($kms)
         ) {
             throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
@@ -64,24 +64,106 @@ class RouteModel {
         }
 
         try {
-            json_decode($route);
-        } catch (\Exception $e) {
-            throw $e;
+            $stmt = $this->db->prepare("
+            INSERT INTO
+                routes (id_user, date, start_date, kms)
+            VALUES
+                (:id_user, :date, :start_date, :kms)
+        ");
+
+            $stmt->execute(array(
+                ":id_user" => $id_user,
+                ":date" => date('Y-m-d H:i:s'),
+                ":start_date" => $start_date,
+                //":route" => $route,
+                ":kms" => $kms
+            ));
+
+            $id_route = $this->db->getPDO()->lastInsertId();
+
+            $stmt = $this->db->prepare("
+            UPDATE
+                routes
+            SET
+                route = (SELECT part FROM route_parts WHERE id_user = :id_user LIMIT 1)
+            WHERE
+                id_route = :id_route
+        ");
+
+            $stmt->execute(array(
+                ":id_user" => $id_user,
+                ":id_route" => $id_route
+            ));
+
+            $stmt = $this->db->prepare("
+            DELETE FROM route_parts WHERE id_user = :id_user        
+        ");
+
+            $stmt->execute(array(":id_user" => $id_user));
+        } catch (\PDOException $e) {
+            throw new RouteException($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * Save a part of the route to the database
+     *
+     * @param $id_user
+     * @param $part
+     * @throws RouteException
+     */
+    public function saveRoutePart($id_user, $part) {
+        $id_user = (int) $id_user;
+
+        if (
+            empty($id_user) ||
+            empty($part)
+        ) {
+            throw new RouteException("Data not valid", RouteException::DATA_NOT_VALID);
+        }
+
+        $stmt = $this->db->prepare("
+            SELECT
+                part
+            FROM
+                route_parts
+            WHERE
+                id_user = :id_user
+        ");
+
+        $stmt->execute(array(":id_user" => $id_user));
+
+        $db_part = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!empty($db_part)) {
+            $old_part = json_decode($db_part['part']);
+            $part = array_merge($old_part, $part);
+
+            $stmt = $this->db->prepare("
+                UPDATE
+                    route_parts
+                SET
+                    part = '".json_encode($part)."'
+                WHERE
+                    id_user = :id_user
+            ");
+
+            $stmt->execute(array(
+                ":id_user" => $id_user
+            ));
+
+            return;
         }
 
         $stmt = $this->db->prepare("
             INSERT INTO
-                routes (id_user, date, start_date, route, kms)
+                route_parts (id_user, part)
             VALUES
-                (:id_user, :date, :start_date, '".$route."', :kms)
+                (:id_user, '".json_encode($part)."')
         ");
 
         $stmt->execute(array(
-            ":id_user" => $id_user,
-            ":date" => date('Y-m-d H:i:s'),
-            ":start_date" => $start_date,
-            //":route" => $route,
-            ":kms" => $kms
+            ":id_user" => $id_user
         ));
     }
 

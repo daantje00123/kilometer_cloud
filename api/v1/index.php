@@ -26,6 +26,9 @@ $app->group('/protected', function() {
     // Save a new route
     $this->post('/route', '\Backend\Controllers\RouteController:saveRoute');
 
+    // Save a part of the route
+    $this->post('/route-part', '\Backend\Controllers\RouteController:saveRoutePart');
+
     // Edit route
     $this->put('/route', '\Backend\Controllers\RouteController:editRoute');
 

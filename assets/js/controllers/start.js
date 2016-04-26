@@ -2,8 +2,8 @@
     angular.module('kmApp')
         .controller('startController', startController);
 
-    startController.$inject = ['uiGmapGoogleMapApi', 'uiGmapIsReady', '$location', '$http', '$httpParamSerializer', 'authFactory'];
-    function startController(uiGmapGoogleMapApi, uiGmapIsReady, $location, $http, $httpParamSerializer, authFactory) {
+    startController.$inject = ['uiGmapGoogleMapApi', 'uiGmapIsReady', '$location', '$http', '$httpParamSerializer', 'authFactory', 'saveRoutePart'];
+    function startController(uiGmapGoogleMapApi, uiGmapIsReady, $location, $http, $httpParamSerializer, authFactory, saveRoutePart) {
         var vm = this;
 
         vm.user = authFactory.getUserData();
@@ -52,6 +52,8 @@
                     path.push({lat: position.coords.latitude, lng: position.coords.longitude});
                     routePath.setPath(path);
 
+                    saveRoutePart(position.coords.latitude, position.coords.longitude);
+
                     map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
                     map.setZoom(16);
                     var time1 = Date.now()/1000;
@@ -63,6 +65,8 @@
 
                         path.push({lat: position.coords.latitude, lng: position.coords.longitude});
                         routePath.setPath(path);
+
+                        saveRoutePart(position.coords.latitude, position.coords.longitude);
 
                         map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
                         time1 = Date.now()/1000;
@@ -89,23 +93,27 @@
                 return;
             }
 
-            $http({
-                method: "POST",
-                url: '/api/v1/protected/route',
-                data: $httpParamSerializer({
-                    kms: vm.distance,
-                    route: JSON.stringify(path),
-                    start_date: startDate,
-                    id_user: authFactory.getUserId()
-                }),
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).then(function(response) {
-                alert("De route is opgeslagen!");
-                $location.path('/');
-            }, function(response) {
-                console.log(response);
-                alert("Er is iets fout gegaan tijdens het opslaan van de route");
-            });
+            saveRoutePart(true)
+                .then(function(data) {
+                    $http({
+                        method: "POST",
+                        url: '/api/v1/protected/route',
+                        data: $httpParamSerializer({
+                            kms: vm.distance,
+                            start_date: startDate
+                        }),
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                    }).then(function(response) {
+                        alert("De route is opgeslagen!");
+                        $location.path('/');
+                    }, function(response) {
+                        console.log(response);
+                        alert("Er is iets fout gegaan tijdens het opslaan van de route");
+                    });
+                }, function (data) {
+                    console.log(data);
+                    alert("Er is een fout opgetreden tijdens het opslaan van de route");
+                });
         }
     }
 

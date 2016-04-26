@@ -17,6 +17,7 @@
         }])
         .factory("authFactory", authFactory)
         .factory("httpRequestInterceptor", httpRequestInterceptor)
+        .factory('saveRoutePart', saveRoutePart)
         .run(['$q', '$http', '$location', 'authFactory', '$interval', function($q, $http, $location, authFactory, $interval) {
             $http.get('/api/v1/protected/ping').success(function(data) {
                 authFactory.setLoggedin(true);
@@ -214,6 +215,34 @@
     function dateToISO() {
         return function(input) {
             return input.replace(/(.+) (.+)/, "$1T$2Z");
+        }
+    }
+
+    saveRoutePart.$inject = ['$http'];
+    function saveRoutePart($http) {
+        var part = [];
+        return function(lat, lng) {
+            if (lat === true) {
+                if (part.length < 1) {
+                    part = [];
+                    return $http.get('/api/v1/protected/ping');
+                }
+
+                var tmp = part;
+                part = [];
+
+                return $http.post('/api/v1/protected/route-part', {
+                    'part': tmp
+                });
+            }
+
+            part.push({lat: lat, lng: lng});
+            if (part.length >= 10) {
+                $http.post('/api/v1/protected/route-part', {
+                    'part': part
+                });
+                part = [];
+            }
         }
     }
 })();

@@ -38,13 +38,13 @@ class RouteController extends Controller {
     public function saveRoute($req, $res) {
         $body = $req->getParsedBody();
 
-        $id_user = (!isset($body['id_user']) ? null : $body['id_user']);
+        $id_user = $req->getAttribute('jwt')->data->id_user;
         $start_date = (!isset($body['start_date']) ? null : $body['start_date']);
-        $route = (!isset($body['route']) ? null : $body['route']);
+        //$route = (!isset($body['route']) ? null : $body['route']);
         $kms = (!isset($body['kms']) ? null : $body['kms']);
 
         try {
-            $this->model->saveRoute($id_user, $start_date, $route, $kms);
+            $this->model->saveRoute($id_user, $start_date, $kms);
         } catch (Exception $e) {
             return $res->withJson(array(
                 'success' => false,
@@ -56,6 +56,36 @@ class RouteController extends Controller {
         return $res->withJson(array(
             'success' => true,
             'message' => "Route saved"
+        ));
+    }
+
+    /**
+     * Save a route part to the database
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
+    public function saveRoutePart($req, $res) {
+        $body = $req->getParsedBody();
+
+        $id_user = $req->getAttribute('jwt')->data->id_user;
+        $part = (isset($body['part']) ? $body['part'] : null);
+        
+        try {
+            $this->model->saveRoutePart($id_user, $part);
+        } catch (Exception $e) {
+            return $res->withJson(array(
+                'success' => false,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode()
+            ), 500);
+        }
+
+        return $res->withJson(array(
+            'success' => true,
+            'message' => 'Part is saved'
         ));
     }
 
@@ -144,7 +174,7 @@ class RouteController extends Controller {
                 'success' => false,
                 'message' => $e->getMessage(),
                 'code' => $e->getCode()
-            ));
+            ), 500);
         }
 
         return $res->withJson(array(
