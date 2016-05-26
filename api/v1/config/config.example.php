@@ -15,7 +15,6 @@ return array(
         'host' => '',
         'username' => '',
         'password' => '',
-        'use_secure_connection' => true,
         'secure' => 'tls',               // tls and ssl supported
         'port' => 587,
         'from_address' => '',

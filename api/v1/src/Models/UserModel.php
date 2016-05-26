@@ -265,4 +265,54 @@ class UserModel {
 
         $stmt->execute(array(":token" => $confirm_token));
     }
+
+    public function generateIosToken($id_user) {
+        $id_user = (int) $id_user;
+
+        if (empty($id_user)) {
+            throw new UserException("Data is not valid", UserException::DATA_NOT_VALID);
+        }
+
+        $token = base64_encode(openssl_random_pseudo_bytes(64));
+        $token = str_replace("+", "", $token);
+
+        $stmt = $this->db->prepare("
+            UPDATE
+                auth_users
+            SET
+                ios_token = :token
+            WHERE
+                id_user = :id_user
+        ");
+
+        $stmt->execute(array(
+            ":token" => $token,
+            ":id_user" => $id_user
+        ));
+
+        return $token;
+    }
+
+    public function validateToken($token) {
+        if (empty($token)) {
+            throw new UserException("Data not valid", UserException::DATA_NOT_VALID);
+        }
+
+        $stmt = $this->db->prepare("
+            SELECT
+                ios_token
+            FROM
+                auth_users
+            WHERE
+                ios_token = :token
+        ");
+
+        $stmt->execute(array(":token" => $token));
+
+        if ($stmt->rowCount() < 1) {
+            return false;
+        }
+
+        return true;
+    }
 }

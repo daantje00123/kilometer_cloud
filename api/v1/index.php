@@ -21,6 +21,9 @@ $app->post('/auth/register', '\Backend\Controllers\UserController:register');
 // Activate a new user account
 $app->get('/auth/activate', '\Backend\Controllers\UserController:activate');
 
+// Get iOS token
+$app->post('/auth/swift/login', '\Backend\Controllers\UserController:login');
+
 // This group is only accessible when a valid JWT is send in the Authorization header
 $app->group('/protected', function() {
     // Get the route history
@@ -50,5 +53,13 @@ $app->group('/protected', function() {
     // Batch delete routes
     $this->delete('/batch/routes/delete', '\Backend\Controllers\BatchController:deleteRoutes');
 })->add(new \Backend\Middleware\JwtMiddleware());
+
+// This group is only accessible when a valid user token is send
+$app->group('/swift', function() {
+    // Save a new route
+    $this->post('/route', '\Backend\Controllers\RouteController:swiftSave');
+
+    $this->post('/check', '\Backend\Controllers\UserController:swiftCheck');
+})->add(new \Backend\Middleware\SwiftMiddleware());
 
 $app->run();

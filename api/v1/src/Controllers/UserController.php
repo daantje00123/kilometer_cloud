@@ -22,6 +22,50 @@ class UserController extends Controller {
     }
 
     /**
+     * Login user in for iOS app
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
+    public function login($req, $res) {
+        $body = $req->getParsedBody();
+
+        $username = (!isset($body['username']) ? null : $body['username']);
+        $password = (!isset($body['password']) ? null : $body['password']);
+
+        if (
+            empty($username) ||
+            empty($password)
+        ) {
+            return $res->withJson(array(
+                'success' => false,
+                'message' => 'Username or password is not set or empty'
+            ), 400);
+        }
+
+        try {
+            $user = $this->model->validateLogin($username, $password);
+            $token = $this->model->generateIosToken($user->id_user);
+        } catch (\Exception $e) {
+            return $res->withJson(array(
+                'success' => false,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode()
+            ), 500);
+        }
+
+        return $res->withJson(array(
+            'success' => true,
+            'message' => 'User is successfully authenticated',
+            'id_user' => $user->id_user,
+            'user_data' => $user,
+            'token' => $token
+        ));
+    }
+
+    /**
      * Register a new user
      *
      * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
@@ -89,5 +133,41 @@ class UserController extends Controller {
         }
 
         echo '<p>Uw account is succesvol geactiveerd. U kunt nu <a href="'.$req->getUri()->getScheme().'://'.$req->getUri()->getHost().'">inloggen</a>.</p>';
+    }
+
+    /**
+     * Validate user token for iOS
+     *
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
+    public function swiftCheck($req, $res) {
+        $body = $req->getParsedBody();
+
+        $token = (isset($body['token']) ? $body['token'] : null);
+
+        try {
+            $valid = $this->model->validateToken($token);
+        } catch(\Exception $e) {
+            return $res->withJson(array(
+                'success' => false,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode()
+            ), 500);
+        }
+
+        if ($valid !== true) {
+            return $res->withJson(array(
+                'success' => false,
+                'message' => 'Token not valid'
+            ), 500);
+        }
+
+        return $res->withJson(array(
+            'success' => true,
+            'message' => 'Token valid'
+        ));
     }
 }

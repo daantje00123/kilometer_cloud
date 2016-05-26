@@ -60,6 +60,40 @@ class RouteController extends Controller {
     }
 
     /**
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
+    public function swiftSave($req, $res) {
+        $body = $req->getParsedBody();
+
+        $id_user = $req->getAttribute('user')->id_user;
+        $route = (isset($body['route']) ? $body['route'] : null);
+        $kms = (isset($body['kms']) ? $body['kms'] : null);
+        $start_date = (isset($body['start_date']) ? $body['start_date'] : null);
+
+        //var_dump($start_date);exit;
+
+        try {
+            $route = json_decode($route);
+            $this->model->saveRoutePart($id_user, $route);
+            $this->model->saveRoute($id_user, $start_date, $kms);
+        } catch (Exception $e) {
+            return $res->withJson(array(
+                'success' => false,
+                'message' => $e->getMessage(),
+                'code' => $e->getCode()
+            ), 500);
+        }
+
+        return $res->withJson(array(
+            'success' => true,
+            'message' => 'Route saved'
+        ));
+    }
+
+    /**
      * Save a route part to the database
      *
      * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
