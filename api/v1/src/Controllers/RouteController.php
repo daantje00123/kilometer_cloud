@@ -1,6 +1,7 @@
 <?php
 namespace Backend\Controllers;
 
+use Backend\Exceptions\RouteException;
 use Backend\Models\RouteModel;
 use Interop\Container\ContainerInterface;
 use Zend\Config\Config;
@@ -285,6 +286,67 @@ class RouteController extends Controller {
         return $res->withJson(array(
             'success' => true,
             'message' => 'Route deleted'
+        ));
+    }
+
+    /**
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
+    public function rpiSaveNewRit($req, $res) {
+        $body = $req->getParsedBody();
+
+        $id_user = $req->getAttribute('user')->id_user;
+        $startdate = (isset($body['startdate']) ? $body['startdate'] : null);
+        $stopdate = (isset($body['stopdate']) ? $body['stopdate'] : null);
+        $distance = (isset($body['distance']) ? $body['distance'] : null);
+
+        try {
+            $id_route = $this->model->rpiSaveNewRit($id_user, $startdate, $stopdate, $distance);
+        } catch(RouteException $e) {
+            return $res->withJson(array(
+                "success" => false,
+                "message" => $e->getMessage(),
+                "code" => $e->getCode()
+            ), 500);
+        }
+
+        return $res->withJson(array(
+            "success" => true,
+            "message" => "New rit created",
+            "ritId" => $id_route
+        ));
+    }
+
+    /**
+     * @param       \Psr\Http\Message\ServerRequestInterface        $req        The client request
+     * @param       \Psr\Http\Message\ResponseInterface             $res        The server response
+     *
+     * @return      \Psr\Http\Message\ResponseInterface
+     */
+    public function rpiSavePart($req, $res) {
+        $body = $req->getParsedBody();
+
+        $id_user = $req->getAttribute('user')->id_user;
+        $id_route = (isset($body['ritId']) ? $body['ritId'] : null);
+        $lat = (isset($body['lat']) ? $body['lat'] : null);
+        $lng = (isset($body['lng']) ? $body['lng'] : null);
+
+        try {
+            $this->model->rpiSavePart($id_user, $id_route, $lat, $lng);
+        } catch(RouteException $e) {
+            return $res->withJson(array(
+                "success" => false,
+                "message" => $e->getMessage(),
+                "code" => $e->getCode()
+            ), 500);
+        }
+
+        return $res->withJson(array(
+            "success" => true,
+            "message" => "Part saved"
         ));
     }
 }

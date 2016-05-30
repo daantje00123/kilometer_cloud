@@ -62,4 +62,10 @@ $app->group('/swift', function() {
     $this->post('/check', '\Backend\Controllers\UserController:swiftCheck');
 })->add(new \Backend\Middleware\SwiftMiddleware());
 
+// This group is only accessible when the right key is present
+$app->group('/rpi', function() {
+    $this->post('/save_new_rit', '\Backend\Controllers\RouteController:rpiSaveNewRit');
+    $this->post('/save_part', '\Backend\Controllers\RouteController:rpiSavePart');
+})->add(new \Backend\Middleware\RpiMiddleware());
+
 $app->run();

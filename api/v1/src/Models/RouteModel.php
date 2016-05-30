@@ -498,6 +498,92 @@ class RouteModel {
         return (int) $stmt->fetch(\PDO::FETCH_OBJ)->count;
     }
 
+    public function rpiSaveNewRit($id_user, $startdate, $stopdate, $distance) {
+        $id_user = (int) $id_user;
+        $distance = (float) $distance;
+
+        if (
+            empty($id_user) ||
+            empty($startdate) ||
+            empty($stopdate)
+        ) {
+            throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
+        }
+
+        $stmt = $this->db->prepare("
+            INSERT INTO
+                routes (id_user, date, start_date, kms, route)
+            VALUES
+                (:id_user, :stop_date, :start_date, :distance, '[]');
+        ");
+
+        $stmt->execute(array(
+            ":id_user" => $id_user,
+            ":stop_date" => $stopdate,
+            ":start_date" => $startdate,
+            ":distance" => $distance
+        ));
+
+        return $this->db->getPDO()->lastInsertId();
+    }
+
+    public function rpiSavePart($id_user, $id_route, $lat, $lng) {
+        $id_user = (int) $id_user;
+        $id_route = (int) $id_route;
+        $lat = (float) $lat;
+        $lng = (float) $lng;
+
+        if (
+            empty($id_user) ||
+            empty($id_route)
+        ) {
+            throw new RouteException("Not all data is valid", RouteException::DATA_NOT_VALID);
+        }
+
+        $stmt = $this->db->prepare("
+            SELECT
+                route
+            FROM
+                routes
+            WHERE 
+                id_route = :id_route AND
+                id_user = :id_user
+        ");
+
+        $stmt->execute(array(
+            ":id_route" => $id_route,
+            ":id_user" => $id_user
+        ));
+
+        if ($stmt->rowCount() < 1) {
+            throw new RouteException("User not valid", RouteException::USER_NOT_VALID);
+        }
+
+        $route = $stmt->fetch(\PDO::FETCH_OBJ)->route;
+
+        $route = json_decode($route, true);
+
+        error_log(print_r($route, true));
+
+        array_push($route, array(
+            "lat" => $lat,
+            "lng" => $lng
+        ));
+
+        $stmt2 = $this->db->prepare("
+            UPDATE
+                routes
+            SET
+                route = '".json_encode($route)."'
+            WHERE
+                id_route = :id_route
+        ");
+
+        $stmt2->execute(array(
+            ":id_route" => $id_route
+        ));
+    }
+
     /**
      * Parse all the database data with some more info
      *
